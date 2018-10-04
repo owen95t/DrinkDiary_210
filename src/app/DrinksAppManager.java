@@ -21,7 +21,7 @@ public class DrinksAppManager {
         Scanner input = new Scanner(System.in);
 
         while (status) { //main loop to control the program's status
-            displayMenu(); //ask for user input
+            displayMainMenu(); //ask for user input
             boolean cycle = false; //create a boolean for the next while loop
             while (cycle == false) { //while loop that will keep track of user valid/invalid input
                 int i = input.nextInt();
@@ -45,7 +45,7 @@ public class DrinksAppManager {
 
     }
 
-    public void displayMenu() {
+    public void displayMainMenu() {
         System.out.println("Please choose an option: ");
         System.out.println("1. Add new drink");
         System.out.println("2. Show your drinks list");
@@ -131,7 +131,6 @@ public class DrinksAppManager {
 
         bList.add(drinkTemp);
     }
-
 
     public void insideList() {
         Scanner input = new Scanner(System.in);
