@@ -48,12 +48,14 @@ public class BeerObj implements Serializable, Drink {
     public void addPhoto(PhotoObj photo) {
         this.photo = photo;
     }
+
     //REQUIRES: String parameter AlcPerc
     //MODIFIES: this
     //EFFECTS: Changes the value of AlcPerc (Alcohol Percentage)
     public void setAlcPerc(String alcPerc) {
         this.AlcPerc = alcPerc;
     }
+
     //REQUIRES: nothing
     //MODIFIES: nothing
     //EFFECTS: returns name

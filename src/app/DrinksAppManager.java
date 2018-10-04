@@ -8,7 +8,7 @@ import java.io.*;
 
 import java.util.*;
 
-public class BeerAppManager {
+public class DrinksAppManager {
     private boolean status = true;
 
     private ArrayList<Drink> bList = new ArrayList<>();
@@ -18,16 +18,10 @@ public class BeerAppManager {
     public void start() {
         System.out.println("Welcome to your alcohol diary");
 
-        System.out.println("1. Add New model");
-        System.out.println("2. Show Your model List");
-        System.out.println("3. Save");
-        System.out.println("4. Load");
-        System.out.println("5. Exit");
-
         Scanner input = new Scanner(System.in);
 
         while (status) { //main loop to control the program's status
-            System.out.println("Please choose an option: "); //ask for user input
+            displayMenu(); //ask for user input
             boolean cycle = false; //create a boolean for the next while loop
             while (cycle == false) { //while loop that will keep track of user valid/invalid input
                 int i = input.nextInt();
@@ -50,6 +44,16 @@ public class BeerAppManager {
         }
 
     }
+
+    public void displayMenu() {
+        System.out.println("Please choose an option: ");
+        System.out.println("1. Add new drink");
+        System.out.println("2. Show your drinks list");
+        System.out.println("3. Save");
+        System.out.println("4. Load");
+        System.out.println("5. Exit");
+    }
+
     public void menuSelection(int x) {
         if (x == 1) {
             System.out.println("1 Chosen");
@@ -98,49 +102,34 @@ public class BeerAppManager {
                 System.out.println("Please try again: ");
                 selection = input.nextInt();
             }
-
-
         }
-
-//        BeerObj newBeer = new BeerObj();
-//        Scanner input = new Scanner(System.in);
-//        System.out.println("Please enter the name of the beer: ");
-//        newBeer.addName(input.nextLine());
-//        System.out.println("Please enter the type of the beer: ");
-//        newBeer.setType(input.nextLine());
-//        System.out.println("Please enter the alcohol percentage: ");
-//        newBeer.setAlcPerc(input.nextLine());
-//        System.out.println("Please enter any notes you may have: ");
-//        newBeer.setNotes(input.nextLine());
     }
 
     public void newDrinkSelection(int i) {
+        Drink drinkTemp = null;
         Scanner input = new Scanner(System.in);
-        if (i == 1) {
-            BeerObj newBeer = new BeerObj();
-            System.out.println("Please enter the name of the beer: ");
-            newBeer.addName(input.nextLine());
-            System.out.println("Please enter the type of the beer: ");
-            newBeer.setType(input.nextLine());
-            System.out.println("Please enter the alcohol percentage: ");
-            newBeer.setAlcPerc(input.nextLine());
-            System.out.println("Please enter any notes you may have: ");
-            newBeer.setNotes(input.nextLine());
+        try {
+            if (i == 1) {
+                drinkTemp = new BeerObj();
+            } else if (i == 2) {
+                drinkTemp = new WineObj();
+            } else if (i == 3) {
+                drinkTemp = new CiderObj();
+            }
+        } catch (Exception e) {
+            System.out.println("Exception caught");
 
-            bList.add(newBeer);
-        } else if (i == 2) {
-            WineObj newWine = new WineObj();
-            System.out.println("Please enter the name of the wine: ");
-            newWine.addName(input.nextLine());
-            System.out.println("Please enter the type of the wine: ");
-            newWine.setType(input.nextLine());
-            System.out.println("Please enter the alcohol percentage: ");
-            newWine.setAlcPerc(input.nextLine());
-            System.out.println("Please enter any notes you may have: ");
-            newWine.setNotes(input.nextLine());
-
-            bList.add(newWine);
         }
+        System.out.println("Please enter the name/brand of the drink: ");
+        drinkTemp.addName(input.nextLine());
+        System.out.println("Please enter the type of the drink: ");
+        drinkTemp.setType(input.nextLine());
+        System.out.println("Please enter the alcohol percentage: ");
+        drinkTemp.setAlcPerc(input.nextLine());
+        System.out.println("Please enter any notes you may have: ");
+        drinkTemp.setNotes(input.nextLine());
+
+        bList.add(drinkTemp);
     }
 
 
@@ -180,25 +169,6 @@ public class BeerAppManager {
         }
     }
 
-//    public void save() {
-//        FileOutputStream output;
-//        ObjectOutputStream out;
-//        try {
-//            output = new FileOutputStream("test.txt");
-//            out = new ObjectOutputStream(output);
-//            for(int i = 0; i < bList.size(); i++) {
-//                out.writeObject(bList.get(i));
-//            }
-//            out.close();
-//
-//        } catch (IOException e) {
-//            System.out.println("IOException caught");
-//        } catch (Exception a) {
-//            System.out.println("Other Exception caught");
-//        }
-//
-//    }
-
     public void save(ArrayList<Drink> list) {
         try {
             FileOutputStream fileOutput = new FileOutputStream("test.txt");
@@ -210,28 +180,6 @@ public class BeerAppManager {
             System.out.println("IOException caught");
         }
     }
-
-//    public void load() {
-//        bList.clear();
-//        try {
-//            FileInputStream input = new FileInputStream("test.txt");
-//            ObjectInputStream in = new ObjectInputStream(input);
-//
-//            while (true) {
-//                bList.add((BeerObj) in.readObject());
-//            }
-//        } catch (IOException e) {
-//            System.out.println("File not found");
-//        } catch (Exception a) {
-//            System.out.println("Other exception caught");
-//        }
-//
-//
-//        System.out.println("Save file loaded: " + "/n");
-//        for (BeerObj beer : bList) {
-//            System.out.println(beer.getName());
-//        }
-//    }
 
     public void load() {
         ArrayList<Drink> bList2 = null;

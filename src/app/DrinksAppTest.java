@@ -1,9 +1,9 @@
 package app;
 
 
-public class BeerAppTest {
+public class DrinksAppTest {
     public static void main(String[] args) {
-        BeerAppManager bam = new BeerAppManager();
+        DrinksAppManager bam = new DrinksAppManager();
         bam.start();
     }
 }
