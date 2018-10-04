@@ -21,13 +21,13 @@ class DrinkTest {
 
     @Test
     void testAddNameBeer() {
-        newBeer.addName("Kokanee");
+        newBeer.setName("Kokanee");
         assertEquals("Kokanee", newBeer.getName());
     }
 
     @Test
     void testAddNameWine() {
-        newWine.addName("Chardonnay");
+        newWine.setName("Chardonnay");
         assertEquals("Chardonnay", newWine.getName());
     }
 

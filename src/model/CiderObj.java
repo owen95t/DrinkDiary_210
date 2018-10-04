@@ -24,7 +24,7 @@ public class CiderObj implements Serializable, Drink {
     }
 
     @Override
-    public void addName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

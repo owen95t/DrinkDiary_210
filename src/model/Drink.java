@@ -4,7 +4,7 @@ import Photo.PhotoObj;
 
 public interface Drink {
 
-    public void addName(String name);
+    public void setName(String name);
 
     public void setType(String type);
 

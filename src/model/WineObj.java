@@ -16,7 +16,7 @@ public class WineObj implements Serializable, Drink{
 
     }
     @Override
-    public void addName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

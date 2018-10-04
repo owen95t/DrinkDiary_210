@@ -121,7 +121,7 @@ public class DrinksAppManager {
 
         }
         System.out.println("Please enter the name/brand of the drink: ");
-        drinkTemp.addName(input.nextLine());
+        drinkTemp.setName(input.nextLine());
         System.out.println("Please enter the type of the drink: ");
         drinkTemp.setType(input.nextLine());
         System.out.println("Please enter the alcohol percentage: ");

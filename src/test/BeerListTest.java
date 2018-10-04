@@ -10,7 +10,7 @@ class BeerListTest {
     @Test
     void getBeer() {
         BeerObj beer = new BeerObj();
-        beer.addName("Kokanee");
+        beer.setName("Kokanee");
         DrinkList beerList = new DrinkList();
         beerList.addBeer(beer);
 
@@ -20,7 +20,7 @@ class BeerListTest {
     @Test
     void doesBeerExist() {
         BeerObj beer = new BeerObj();
-        beer.addName("Kokanee");
+        beer.setName("Kokanee");
         DrinkList beerList = new DrinkList();
         beerList.addBeer(beer);
 
@@ -33,8 +33,8 @@ class BeerListTest {
         BeerObj beer = new BeerObj();
         BeerObj beer2 = new BeerObj();
 
-        beer.addName("Kokanee");
-        beer2.addName("Molson");
+        beer.setName("Kokanee");
+        beer2.setName("Molson");
 
         DrinkList beerList = new DrinkList();
 

@@ -9,7 +9,7 @@ class TestBeerObj {
     @Test
     void addName() {
         BeerObj beer = new BeerObj();
-        beer.addName("Kokanee");
+        beer.setName("Kokanee");
         assertTrue(beer.getName().equals("Kokanee"));
     }
 

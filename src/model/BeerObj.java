@@ -24,7 +24,7 @@ public class BeerObj implements Serializable, Drink {
     //REQUIRES: String parameter
     //MODIFIES: this.name
     //EFFECTS: changes the value of Name
-    public void addName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
