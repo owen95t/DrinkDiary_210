@@ -72,4 +72,10 @@ public class CiderObj implements Serializable, Drink {
     public PhotoObj getPhoto() {
         return photo;
     }
+
+    @Override
+    public String toString() {
+        return "Name of model: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
+                + "\nType of model: " + getType() + "\nNotes on this model: " + getNotes();
+    }
 }

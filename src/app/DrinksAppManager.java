@@ -20,7 +20,7 @@ public class DrinksAppManager {
 
         Scanner input = new Scanner(System.in);
 
-        while (status) { //main loop to control the program's status
+        while (status) { //ui loop to control the program's status
             displayMainMenu(); //ask for user input
             boolean cycle = false; //create a boolean for the next while loop
             while (cycle == false) { //while loop that will keep track of user valid/invalid input
@@ -60,9 +60,6 @@ public class DrinksAppManager {
             newDrinkObj();
         } else if (x == 2) {
             System.out.println("2 Chosen");
-            for (Drink drink : bList) {
-                System.out.println(drink.getName());
-            }
             insideList();
         } else if (x == 3) {
             System.out.println("Saving...");
@@ -77,6 +74,7 @@ public class DrinksAppManager {
             status = false;
         }
     }
+
     public void newDrinkObj() { //put this in a while loop and a try catch statement for errors
         boolean stat = true;
         Scanner input = new Scanner(System.in);
@@ -115,6 +113,10 @@ public class DrinksAppManager {
                 drinkTemp = new WineObj();
             } else if (i == 3) {
                 drinkTemp = new CiderObj();
+            } else if (i == 4) {
+                drinkTemp = new HardLiqourObj();
+            } else if (i == 5) {
+                drinkTemp = new OtherObj();
             }
         } catch (Exception e) {
             System.out.println("Exception caught");
@@ -133,14 +135,20 @@ public class DrinksAppManager {
     }
 
     public void insideList() {
+        for (Drink drink : bList) {
+            System.out.println(drink.getName());
+        }
+
         Scanner input = new Scanner(System.in);
         //add while loop to control this menu.
-        //boolean stat = true;
+        boolean stat = true;
         //while(stat){
         // System.out.println("Select model by name");
         // String name = input.nextLine();
         //
-        System.out.println("Select model (by name)");
+
+
+        System.out.println("Select drink (by name)");
         String name = input.nextLine();
         //Iterator itr = bList.iterator();
 //        while (itr.hasNext()) {
@@ -157,13 +165,33 @@ public class DrinksAppManager {
         }
 
     }
-
+    // I want to a loop here to control how the user interacts. The user can either choose the drinks
+    // from the list the user created or exit to main menu. But this part maybe can wait as if we do a
+    // proper UI it will not be necessary.
     public void insideListTemp() {
         Scanner input = new Scanner(System.in);
-        boolean stat = true;
-        while (stat) {
-            if (bList.size() > 0) {
+        String name = "";
+        for (Drink drink : bList) {
+            System.out.println(drink.getName());
+        }
+        if (bList.size() == 0) {
+            System.out.println("List is empty");
+        } else {
+            System.out.println("Select drink by name.");
+            name = input.nextLine();
+        }
 
+        boolean stat = true;
+        while (stat) { // ?????
+            if (bList.size() > 0) {
+                for (int i = 0; i < bList.size(); i++) {
+                    if (bList.get(i).getName().equals(name)) {
+                        System.out.println(bList.get(i).toString());
+                        stat = false; //?????
+                    } else {
+                        System.out.println("List does not contain this beer");
+                    }
+                }
             }
         }
     }
@@ -188,20 +216,12 @@ public class DrinksAppManager {
             fis = new FileInputStream("test.txt");
             ObjectInputStream in = new ObjectInputStream(fis);
             bList2 = (ArrayList<Drink>) in.readObject();
-
-        } catch (EOFException a) {
-            //end of file, skips to finally.
+            fis.close();
+            in.close();
         } catch (Exception e) {
-            System.out.println("Exception caught");
+            System.out.println("IOException caught");
             System.out.println(e.toString());
         }
-//        finally { //finally runs no matter what
-//            try {
-//                fis.close();
-//            } catch (Exception f) {
-//                System.out.println("FIS not open.");
-//            }
-//        }
         bList = bList2;
 
         System.out.println("Save file loaded: ");

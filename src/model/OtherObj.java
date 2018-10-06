@@ -4,7 +4,9 @@ import Photo.PhotoObj;
 
 import java.io.Serializable;
 
-public class WineObj implements Serializable, Drink{
+public class OtherObj implements Serializable, Drink {
+
+    // TODO: implement this damn thing
 
     private String name;
     private String type;
@@ -12,7 +14,7 @@ public class WineObj implements Serializable, Drink{
     private String notes;
     private PhotoObj photo;
 
-    public WineObj() {
+    public OtherObj() {
 
     }
 
@@ -38,7 +40,7 @@ public class WineObj implements Serializable, Drink{
 
     @Override
     public void addPhoto(PhotoObj photoObj) {
-
+        this.photo = photoObj;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class WineObj implements Serializable, Drink{
 
     @Override
     public PhotoObj getPhoto() {
-        return photo;
+        return this.photo;
     }
 
     @Override

@@ -8,7 +8,7 @@ public class BeerObj implements Serializable, Drink {
 
     private String name;
     private String type;
-    private String AlcPerc;
+    private String alcPerc;
     private String notes;
     private PhotoObj photo;
 
@@ -16,7 +16,7 @@ public class BeerObj implements Serializable, Drink {
         this.name = name;
         this.type = Type;
         this.notes = notes;
-        this.AlcPerc = alcPerc;
+        this.alcPerc = alcPerc;
     }
     public BeerObj(){
 
@@ -53,7 +53,7 @@ public class BeerObj implements Serializable, Drink {
     //MODIFIES: this
     //EFFECTS: Changes the value of AlcPerc (Alcohol Percentage)
     public void setAlcPerc(String alcPerc) {
-        this.AlcPerc = alcPerc;
+        this.alcPerc = alcPerc;
     }
 
     //REQUIRES: nothing
@@ -74,7 +74,7 @@ public class BeerObj implements Serializable, Drink {
     //MODIFIES: nothing
     //EFFECTS: returns alcperc
     public String getAlcPerc() {
-        return AlcPerc;
+        return alcPerc;
     }
 
     //REQUIRES: nothing
