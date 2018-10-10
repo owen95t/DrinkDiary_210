@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-public class DrinkList {
+public class DrinkList extends ArrayList {
     private ArrayList<BeerObj> bList;
 
     public DrinkList() {

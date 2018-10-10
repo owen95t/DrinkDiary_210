@@ -26,7 +26,7 @@ public class DrinksAppManager {
             while (cycle == false) { //while loop that will keep track of user valid/invalid input
                 int i = input.nextInt();
                 try {
-                    while (i > 5 || i < 1) {
+                    while (i > 6 || i < 1) {
                         System.out.println("Invalid Selection");
                         System.out.println("Please try again: ");
                         i = input.nextInt();
@@ -50,32 +50,40 @@ public class DrinksAppManager {
         System.out.println("1. Add new drink");
         System.out.println("2. Show your drinks list");
         System.out.println("3. Save");
-        System.out.println("4. Load");
-        System.out.println("5. Exit");
+        System.out.println("4. Choose item from list");
+        System.out.println("5. Load");
+        System.out.println("6. Exit");
     }
 
     public void menuSelection(int x) {
         if (x == 1) {
-            System.out.println("1 Chosen");
+            System.out.println("Creating new drink object...");
             newDrinkObj();
         } else if (x == 2) {
-            System.out.println("2 Chosen");
-            insideList();
+            System.out.println("Showing drinks list");
+            showDrinksList();
         } else if (x == 3) {
             System.out.println("Saving...");
             save(bList);
             System.out.println("File saved");
         } else if (x == 4) {
+            insideList();
+        } else if (x == 5) {
             System.out.println("Loading...");
             load();
-        } else if (x == 5) {
-            System.out.println("3 Chosen");
-            System.out.println("Exit");
+        } else if (x == 6) {
+            System.out.println("Exiting. Goodbye!");
             status = false;
         }
     }
 
-    public void newDrinkObj() { //put this in a while loop and a try catch statement for errors
+    public void showDrinksList() {
+        for (Drink drink : bList) {
+            System.out.println(drink.getName());
+        }
+    }
+
+    public void newDrinkObj() { 
         boolean stat = true;
         Scanner input = new Scanner(System.in);
         int selection = 0;
@@ -86,12 +94,17 @@ public class DrinksAppManager {
             System.out.println("3. Cider");
             System.out.println("4. Hard Liquor");
             System.out.println("5. Other");
+            System.out.println("6. Return to main menu");
             try {
                 selection = input.nextInt();
-                while (selection > 5 || selection < 1) {
+                while (selection > 6 || selection < 1) {
                     System.out.println("Invalid selection");
                     System.out.println("Please try again: ");
                     selection = input.nextInt();
+                }
+                if (selection == 6) {
+                    stat = false;
+                    break;
                 }
                 stat = false;
                 newDrinkSelection(selection);
@@ -148,7 +161,7 @@ public class DrinksAppManager {
         //
 
 
-        System.out.println("Select drink (by name)");
+        System.out.println("Select drink (by name) or exit (type 'exit')");
         String name = input.nextLine();
         //Iterator itr = bList.iterator();
 //        while (itr.hasNext()) {
@@ -156,13 +169,20 @@ public class DrinksAppManager {
 //
 //            }
 //        }
-        for (int i = 0; i < bList.size(); i++) {
-            if (bList.get(i).getName().equals(name)) {
-                System.out.println(bList.get(i).toString());
-            } else {
-                System.out.println("List does not contain this beer");
+        while (stat) {
+            if (name.equals("exit")) {
+                stat = false;
+                break;
+            }
+            for (int i = 0; i < bList.size(); i++) {
+                if (bList.get(i).getName().equals(name)) {
+                    System.out.println(bList.get(i).toString());
+                } else {
+                    System.out.println("List does not contain this beer");
+                }
             }
         }
+
 
     }
     // I want to a loop here to control how the user interacts. The user can either choose the drinks
@@ -224,7 +244,8 @@ public class DrinksAppManager {
         }
         bList = bList2;
 
-        System.out.println("Save file loaded: ");
+        System.out.println("Save file loaded.");
+        System.out.println("File contains the following items:");
         for (Drink drink : bList) {
             System.out.println(drink.getName());
         }

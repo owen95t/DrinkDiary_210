@@ -4,7 +4,7 @@ import Photo.PhotoObj;
 
 import java.io.Serializable;
 
-public class OtherObj implements Serializable, Drink {
+public class OtherObj extends DrinkAbstract implements Serializable{
 
     // TODO: implement this damn thing
 

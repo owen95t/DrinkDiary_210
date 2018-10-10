@@ -4,7 +4,7 @@ import Photo.PhotoObj;
 
 import java.io.Serializable;
 
-public class BeerObj implements Serializable, Drink {
+public class BeerObj extends DrinkAbstract implements Serializable{
 
     private String name;
     private String type;

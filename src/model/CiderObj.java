@@ -4,7 +4,7 @@ import Photo.PhotoObj;
 
 import java.io.Serializable;
 
-public class CiderObj implements Serializable, Drink {
+public class CiderObj extends DrinkAbstract implements Serializable{
 
     private String name;
     private String type;
