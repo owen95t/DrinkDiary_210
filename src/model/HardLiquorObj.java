@@ -1,19 +1,17 @@
 package model;
 
-
 import java.io.Serializable;
 
-public class CiderObj extends DrinkAbstract implements Serializable {
+public class HardLiquorObj extends DrinkAbstract implements Serializable{
 
-    public CiderObj() {
+    public HardLiquorObj() {
 
     }
 
     @Override
-
     public String toString() {
-        return "Name of cider: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
-                + "\nType of cider: " + getType() + "\nNotes on this model: " + getNotes();
+        return "Name of liquor: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
+                + "\nType of liquor: " + getType() + "\nNotes on this model: " + getNotes();
     }
 
     @Override
@@ -27,4 +25,6 @@ public class CiderObj extends DrinkAbstract implements Serializable {
         }
         return 0;
     }
+
+
 }

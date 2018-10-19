@@ -1,5 +1,8 @@
 package app;
 
+import exception.DrinkDoesNotExistException;
+import exception.LoadFailException;
+import exception.SaveFailedException;
 import model.DrinkList;
 import model.BeerObj;
 import model.*;
@@ -11,7 +14,7 @@ import java.util.*;
 public class DrinksAppManager {
     private boolean status = true;
 
-    private ArrayList<Drink> bList = new ArrayList<>();
+    private ArrayList<DrinkAbstract> bList = new ArrayList<>();
     private DrinkList drinkList = new DrinkList();
 
 
@@ -24,8 +27,8 @@ public class DrinksAppManager {
             displayMainMenu(); //ask for user input
             boolean cycle = false; //create a boolean for the next while loop
             while (cycle == false) { //while loop that will keep track of user valid/invalid input
-                int i = input.nextInt();
                 try {
+                    int i = input.nextInt();
                     while (i > 6 || i < 1) {
                         System.out.println("Invalid Selection");
                         System.out.println("Please try again: ");
@@ -36,7 +39,8 @@ public class DrinksAppManager {
                 } catch (Exception e) {
                     System.out.println("System does not recognize input");
                     System.out.println("Please try again:");
-                    i = input.nextInt();
+                    input.next(); //clear wrong input because scanner does not
+                    continue; //conitnue to loop
                 }
 
             }
@@ -55,22 +59,21 @@ public class DrinksAppManager {
         System.out.println("6. Exit");
     }
 
-    public void menuSelection(int x) {
+    public void menuSelection(int x) throws SaveFailedException, LoadFailException, DrinkDoesNotExistException{
         if (x == 1) {
             System.out.println("Creating new drink object...");
             newDrinkObj();
         } else if (x == 2) {
-            System.out.println("Showing drinks list");
             showDrinksList();
         } else if (x == 3) {
             System.out.println("Saving...");
-            save(bList);
+            save(bList, "test2.txt");
             System.out.println("File saved");
         } else if (x == 4) {
             insideList();
         } else if (x == 5) {
             System.out.println("Loading...");
-            load();
+            load("test2.txt");
         } else if (x == 6) {
             System.out.println("Exiting. Goodbye!");
             status = false;
@@ -78,12 +81,17 @@ public class DrinksAppManager {
     }
 
     public void showDrinksList() {
-        for (Drink drink : bList) {
+        if (bList.isEmpty()) {
+            System.out.println("List is empty");
+        } else {
+            System.out.println("Showing drinks list:");
+        }
+        for (DrinkAbstract drink : bList) {
             System.out.println(drink.getName());
         }
     }
 
-    public void newDrinkObj() { 
+    public void newDrinkObj() {
         boolean stat = true;
         Scanner input = new Scanner(System.in);
         int selection = 0;
@@ -117,8 +125,10 @@ public class DrinksAppManager {
     }
 
     public void newDrinkSelection(int i) {
-        Drink drinkTemp = null;
+        DrinkAbstract drinkTemp = null;
         Scanner input = new Scanner(System.in);
+
+
         try {
             if (i == 1) {
                 drinkTemp = new BeerObj();
@@ -127,128 +137,113 @@ public class DrinksAppManager {
             } else if (i == 3) {
                 drinkTemp = new CiderObj();
             } else if (i == 4) {
-                drinkTemp = new HardLiqourObj();
+                drinkTemp = new HardLiquorObj();
             } else if (i == 5) {
                 drinkTemp = new OtherObj();
             }
         } catch (Exception e) {
             System.out.println("Exception caught");
-
         }
+
         System.out.println("Please enter the name/brand of the drink: ");
         drinkTemp.setName(input.nextLine());
         System.out.println("Please enter the type of the drink: ");
         drinkTemp.setType(input.nextLine());
+        //should try catch here? change String to int
         System.out.println("Please enter the alcohol percentage: ");
         drinkTemp.setAlcPerc(input.nextLine());
+
         System.out.println("Please enter any notes you may have: ");
         drinkTemp.setNotes(input.nextLine());
 
         bList.add(drinkTemp);
     }
 
-    public void insideList() {
+    public void insideList() throws DrinkDoesNotExistException{
+        boolean first = true;
+
+        if (bList.isEmpty()) {
+            System.out.println("List is empty");
+            first = false;
+        }
+
         for (Drink drink : bList) {
             System.out.println(drink.getName());
         }
 
         Scanner input = new Scanner(System.in);
-        //add while loop to control this menu.
-        boolean stat = true;
-        //while(stat){
-        // System.out.println("Select model by name");
-        // String name = input.nextLine();
-        //
 
-
-        System.out.println("Select drink (by name) or exit (type 'exit')");
-        String name = input.nextLine();
-        //Iterator itr = bList.iterator();
-//        while (itr.hasNext()) {
-//            if (itr.next().) {
-//
-//            }
-//        }
-        while (stat) {
-            if (name.equals("exit")) {
-                stat = false;
+        while (first == true) {
+            boolean stat = true;
+            System.out.println("Select drink (by name) or exit (type 'exit')");
+            String name = input.nextLine();
+            if (name.toLowerCase().equals("exit")) {
+                first = false;
                 break;
             }
-            for (int i = 0; i < bList.size(); i++) {
-                if (bList.get(i).getName().equals(name)) {
-                    System.out.println(bList.get(i).toString());
-                } else {
-                    System.out.println("List does not contain this beer");
-                }
-            }
-        }
 
-
-    }
-    // I want to a loop here to control how the user interacts. The user can either choose the drinks
-    // from the list the user created or exit to main menu. But this part maybe can wait as if we do a
-    // proper UI it will not be necessary.
-    public void insideListTemp() {
-        Scanner input = new Scanner(System.in);
-        String name = "";
-        for (Drink drink : bList) {
-            System.out.println(drink.getName());
-        }
-        if (bList.size() == 0) {
-            System.out.println("List is empty");
-        } else {
-            System.out.println("Select drink by name.");
-            name = input.nextLine();
-        }
-
-        boolean stat = true;
-        while (stat) { // ?????
-            if (bList.size() > 0) {
-                for (int i = 0; i < bList.size(); i++) {
-                    if (bList.get(i).getName().equals(name)) {
-                        System.out.println(bList.get(i).toString());
-                        stat = false; //?????
-                    } else {
-                        System.out.println("List does not contain this beer");
+            while (stat) {
+                for (DrinkAbstract drink : bList) {
+                    if (drink.getName().equals(name)) {
+                        System.out.println(drink.toString());
+                        stat = false; //if this a drink matches, print to string
+                        break; //break from this loop.
                     }
                 }
+                if (stat == false) { //this if statement checks whether the above loop found the object or not
+                    break; //if it did find the object and print the info, break out of this while loop
+                } //or else ask use to try again
+                //if this parts run then the code above failed to find a drink
+                System.out.println("Drink does not exist");
+                System.out.println("Please try again: ");
+                stat = false;
             }
         }
     }
 
-    public void save(ArrayList<Drink> list) {
+    public void save(ArrayList<DrinkAbstract> list, String filename) throws SaveFailedException{
         try {
-            FileOutputStream fileOutput = new FileOutputStream("test.txt");
+            FileOutputStream fileOutput = new FileOutputStream(filename);
             ObjectOutputStream out = new ObjectOutputStream(fileOutput);
             out.writeObject(list);
             out.close();
             fileOutput.close();
+        } catch (SaveFailedException s) {
+            throw new SaveFailedException();
         } catch (IOException e) {
             System.out.println("IOException caught");
         }
     }
 
-    public void load() {
-        ArrayList<Drink> bList2 = null;
+    public void load(String filename) throws LoadFailException{
+        ArrayList<DrinkAbstract> bList2 = null;
         bList.clear();
         FileInputStream fis = null;
         try {
-            fis = new FileInputStream("test.txt");
+            fis = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fis);
-            bList2 = (ArrayList<Drink>) in.readObject();
+            bList2 = (ArrayList<DrinkAbstract>) in.readObject();
             fis.close();
             in.close();
+        } catch (LoadFailException l) {
+            System.out.println("Load Failed.");
+            l.printStackTrace();
+            System.out.println(l.toString());
         } catch (Exception e) {
             System.out.println("IOException caught");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
         bList = bList2;
 
-        System.out.println("Save file loaded.");
-        System.out.println("File contains the following items:");
-        for (Drink drink : bList) {
-            System.out.println(drink.getName());
+        if (bList != null) {
+            System.out.println("Save file loaded.");
+            System.out.println("File contains the following items:");
+            for (DrinkAbstract drink : bList) {
+                System.out.println(drink.getName());
+            }
         }
+
     }
 
 }

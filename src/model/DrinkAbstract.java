@@ -2,23 +2,35 @@ package model;
 
 import Photo.PhotoObj;
 
-public abstract class DrinkAbstract implements Drink{
+import java.io.Serializable;
 
-    private String name;
-    private String type;
-    private String alcPerc;
-    private String notes;
-    private PhotoObj photo;
+public abstract class DrinkAbstract implements Serializable, Drink, Comparable<DrinkAbstract>{
 
-    public void setName(String name){}
+    protected String name;
+    protected String type;
+    protected String alcPerc;
+    protected String notes;
+    protected PhotoObj photo;
 
-    public void setType(String type){}
+    public void setName(String name){
+        this.name = name;
+    }
 
-    public void setAlcPerc(String alcPerc){}
+    public void setType(String type){
+        this.type = type;
+    }
 
-    public void setNotes(String notes){}
+    public void setAlcPerc(String alcPerc){
+        this.alcPerc = alcPerc;
+    }
 
-    public void addPhoto(PhotoObj photoObj){}
+    public void setNotes(String notes){
+        this.notes = notes;
+    }
+
+    public void addPhoto(PhotoObj photoObj){
+        this.photo = photoObj;
+    }
 
     public String getName(){
         return name;
@@ -38,5 +50,16 @@ public abstract class DrinkAbstract implements Drink{
 
     public PhotoObj getPhoto(){
         return photo;
+    }
+
+    public abstract String toString();
+
+    public abstract void userInputFeedback();
+
+    public int compareTo(Drink drink) {
+        if (drink.getName().equals(getName())) {
+            return 1;
+        }
+        return 0;
     }
 }
