@@ -4,13 +4,14 @@ import Photo.PhotoObj;
 
 import java.io.Serializable;
 
-public abstract class DrinkAbstract implements Serializable, Drink, Comparable<DrinkAbstract>{
+public abstract class DrinkAbstract implements Serializable, Drink{
 
     protected String name;
     protected String type;
     protected String alcPerc;
     protected String notes;
     protected PhotoObj photo;
+    protected boolean fav = false;
 
     public void setName(String name){
         this.name = name;
@@ -30,6 +31,10 @@ public abstract class DrinkAbstract implements Serializable, Drink, Comparable<D
 
     public void addPhoto(PhotoObj photoObj){
         this.photo = photoObj;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 
     public String getName(){
@@ -52,14 +57,24 @@ public abstract class DrinkAbstract implements Serializable, Drink, Comparable<D
         return photo;
     }
 
+    public boolean getFav() {
+        return fav;
+    }
+
     public abstract String toString();
 
-    public abstract void userInputFeedback();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DrinkAbstract)) return false;
 
-    public int compareTo(Drink drink) {
-        if (drink.getName().equals(getName())) {
-            return 1;
-        }
-        return 0;
+        DrinkAbstract that = (DrinkAbstract) o;
+
+        return name.equals(that.name) && type.equals(that.type); //modified equals... modify hashCode too?
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }
