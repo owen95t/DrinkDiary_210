@@ -68,27 +68,28 @@ public class DrinksAppManager {
             System.out.println("Creating new drink object...");
             newDrinkObj();
         } else if (x == 2) {
-            showDrinksList();
+            drinkList.getList();
         } else if (x == 3) {
             System.out.println("Saving...");
-            save(dList, "test2.txt");
-            saveFav(favList, "test.txt");
+            //save(dList, "test2.txt");
+            //saveFav(favList, "test.txt");
 
-            //save(drinkList, "test.txt");
+            saveDrinkList(drinkList, "DrinkListTest.txt");
 
             System.out.println("File saved\n");
         } else if (x == 4) {
             insideList();
         } else if (x == 5) {
-            removeDrink();
+            //removeDrink();
+            removeDrinkList();
         } else if (x == 6) {
             System.out.println("Loading...");
-            load("test2.txt");
-            loadFav("test.txt");
+            //load("test2.txt");
+            //loadFav("test.txt");
 
-            //load("test.txt");
+            loadDrinkList("DrinkListTest.txt");
 
-            showDrinksList();
+            //showDrinksList();
         } else if (x == 7) {
             System.out.println("Exiting. Goodbye!");
             status = false;
@@ -97,30 +98,30 @@ public class DrinksAppManager {
 
 
     //TODO: instead of having this method, just call getList Method from DrinkList
-    public void showDrinksList() {
-        if (dList.isEmpty()) {
-            System.out.println("\nList is empty\n");
-        } else {
-            System.out.println("\nShowing drinks list:");
-        }
-        int i = 1;
-        for (DrinkAbstract drink : dList) {
-            System.out.println(i + ". " + drink.getName() + "("+drink.getType()+")");
-            i++;
-        }
-        System.out.println("\n");
-        if (favList.isEmpty()) {
-            System.out.println("Favourite list is empty");
-        } else {
-            System.out.println("Showing favourite drinks list");
-        }
-        int j = 1;
-        for (DrinkAbstract drink : favList) {
-            System.out.println(j + ". " + drink.getName() + "("+drink.getType()+")");
-            j++;
-        }
-        System.out.println("\n");
-    }
+//    public void showDrinksList() {
+//        if (dList.isEmpty()) {
+//            System.out.println("\nList is empty\n");
+//        } else {
+//            System.out.println("\nShowing drinks list:");
+//        }
+//        int i = 1;
+//        for (DrinkAbstract drink : dList) {
+//            System.out.println(i + ". " + drink.getName() + "("+drink.getType()+")");
+//            i++;
+//        }
+//        System.out.println("\n");
+//        if (favList.isEmpty()) {
+//            System.out.println("Favourite list is empty");
+//        } else {
+//            System.out.println("Showing favourite drinks list");
+//        }
+//        int j = 1;
+//        for (DrinkAbstract drink : favList) {
+//            System.out.println(j + ". " + drink.getName() + "("+drink.getType()+")");
+//            j++;
+//        }
+//        System.out.println("\n");
+//    }
 
     public void newDrinkObj() {
         boolean stat = true;
@@ -190,79 +191,97 @@ public class DrinksAppManager {
         System.out.println("Add drink to favourite list? (yes/no)");
 
         if (input.nextLine().equals("yes")) {
-            addDrinkToFavList(drinkTemp);
-            //TODO: addDrink method here:
+//            addDrinkToFavList(drinkTemp);
             drinkList.addFavDrink(drinkTemp);
         }
-        addDrinkToList(drinkTemp);
-        //TODO: addDrink method here:
+        //addDrinkToList(drinkTemp);
         drinkList.addDrink(drinkTemp);
 
     }
     //TODO: instead of using this method, just call addDrink method in DrinkList
-    public void addDrinkToList(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException{
-        if (dList.contains(drinkAbstract)) {
-            throw new DrinkAlreadyExistsException("Drink already exists");
-        } else {
-            dList.add(drinkAbstract);
-            System.out.println("Drink added.\n");
-        }
-    }
+//    public void addDrinkToList(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException{
+//        if (dList.contains(drinkAbstract)) {
+//            throw new DrinkAlreadyExistsException("Drink already exists");
+//        } else {
+//            dList.add(drinkAbstract);
+//            System.out.println("Drink added.\n");
+//        }
+//    }
     //TODO: instead of using this method, just call addDrink method in DrinkList
-    public void addDrinkToFavList(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException {
-        if (favList.contains(drinkAbstract)) {
-            throw new DrinkAlreadyExistsException("Drink already exists in list");
-        } else {
-            drinkAbstract.setFav(true);
-            favList.add(drinkAbstract);
-            System.out.println("Drink added to favourites list.\n");
-        }
+//    public void addDrinkToFavList(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException {
+//        if (favList.contains(drinkAbstract)) {
+//            throw new DrinkAlreadyExistsException("Drink already exists in list");
+//        } else {
+//            drinkAbstract.setFav(true);
+//            favList.add(drinkAbstract);
+//            System.out.println("Drink added to favourites list.\n");
+//        }
+//
+//    }
 
-    }
     //TODO: implement remove drink method in DrinkList
-    public void removeDrink() {
+//    public void removeDrink() {
+//        System.out.println("What drink would you like to remove?");
+//        System.out.println("All drinks:");
+//        for (DrinkAbstract drink: dList) {
+//            System.out.println(drink.getName());
+//        }
+//        System.out.println("\nFavourites List: ");
+//        for (DrinkAbstract drink : favList) {
+//            System.out.println(drink.getName());
+//        }
+//        Scanner input = new Scanner(System.in);
+//        String tempName = input.nextLine();
+//
+//        System.out.println("From which list? (main/fav)");
+//        String listInput = input.nextLine();
+//        if (listInput.equals("both") || listInput.equals("main")) {
+//            System.out.println("Main chosen. Items removed from main list will also be removed from favourites list");
+//            for(int i = 0; i < dList.size(); i++) {
+//                if (dList.get(i).getName().equals(tempName)) {
+//                    dList.remove(dList.get(i));
+//                }
+//            }
+//            for(int i = 0; i < favList.size(); i++) {
+//                if (favList.get(i).getName().equals(tempName)) {
+//                    favList.remove(favList.get(i));
+//                }
+//            }
+//            System.out.println("Drink is removed from both lists.\n");
+//        } else if (listInput.equals("fav")) {
+//            for(int i = 0; i < favList.size(); i++) {
+//                if (favList.get(i).getName().equals(tempName)) {
+//                    favList.remove(favList.get(i));
+//                    System.out.println("Drink is removed from favourites list.\n");
+//                    break;
+//                }
+//                if (i == favList.size()-1) {
+//                    System.out.println("This drink is not in the favourites list.");
+//                }
+//            }
+//
+//        }
+//    }
+
+    public void removeDrinkList() {
         System.out.println("What drink would you like to remove?");
-        System.out.println("All drinks:");
-        for (DrinkAbstract drink: dList) {
-            System.out.println(drink.getName());
-        }
-        System.out.println("\nFavourites List: ");
-        for (DrinkAbstract drink : favList) {
-            System.out.println(drink.getName());
-        }
+        drinkList.getList();
+
         Scanner input = new Scanner(System.in);
         String tempName = input.nextLine();
 
         System.out.println("From which list? (main/fav)");
         String listInput = input.nextLine();
-        if (listInput.equals("both") || listInput.equals("main")) {
-            System.out.println("Main chosen. Items removed from main list will also be removed from favourites list");
-            for(int i = 0; i < dList.size(); i++) {
-                if (dList.get(i).getName().equals(tempName)) {
-                    dList.remove(dList.get(i));
-                }
-            }
-            for(int i = 0; i < favList.size(); i++) {
-                if (favList.get(i).getName().equals(tempName)) {
-                    favList.remove(favList.get(i));
-                }
-            }
-            System.out.println("Drink is removed from both lists.\n");
-        } else if (listInput.equals("fav")) {
-            for(int i = 0; i < favList.size(); i++) {
-                if (favList.get(i).getName().equals(tempName)) {
-                    favList.remove(favList.get(i));
-                    System.out.println("Drink is removed from favourites list.\n");
-                    break;
-                }
-                if (i == favList.size()-1) {
-                    System.out.println("This drink is not in the favourites list.");
-                }
-            }
 
+        if (listInput.toLowerCase().equals("main")) {
+            System.out.println("Main chosen. Items removed from the main list will also be removed from the favourites list");
+            drinkList.removeDrinkName(tempName);
+            drinkList.removeFavDrinkName(tempName);
+            System.out.println("Drink removed from both lists.");
+        } else if (listInput.toLowerCase().equals("fav")) {
+            drinkList.removeFavDrinkName(tempName);
+            System.out.println("Drink removed from favourites list ");
         }
-
-
     }
 
     public void insideList(){
@@ -307,6 +326,7 @@ public class DrinksAppManager {
         }
     }
 
+    /*
     public void save(ArrayList<DrinkAbstract> list, String filename) throws SaveFailedException{
         try {
             FileOutputStream fileOutput = new FileOutputStream(filename);
@@ -400,10 +420,8 @@ public class DrinksAppManager {
         }
 
     }
-
-
-
-
+    */
+    
     public void saveDrinkList(DrinkList list, String filename) throws SaveFailedException{
         try {
             FileOutputStream fileOutput = new FileOutputStream(filename);

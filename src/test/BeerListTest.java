@@ -12,9 +12,8 @@ class BeerListTest {
         BeerObj beer = new BeerObj();
         beer.setName("Kokanee");
         DrinkList beerList = new DrinkList();
-        beerList.addDrink(beer);
 
-        assertTrue(beerList.getDrink("Kokanee").equals(beer));
+
     }
 
     @Test
@@ -22,9 +21,8 @@ class BeerListTest {
         BeerObj beer = new BeerObj();
         beer.setName("Kokanee");
         DrinkList beerList = new DrinkList();
-        beerList.addDrink(beer);
 
-        assertTrue(beerList.doesDrinkExist("Kokanee"));
+
 
     }
 
@@ -38,11 +36,6 @@ class BeerListTest {
 
         DrinkList beerList = new DrinkList();
 
-
-        beerList.addDrink(beer);
-        beerList.addDrink(beer2);
-
-        assertFalse(beerList.doesDrinkExist("Heineken"));
 
 
     }
