@@ -39,6 +39,7 @@ public class DrinksAppManager {
                     cycle = true;
                     menuSelection(i);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("System does not recognize input");
                     System.out.println("Please try again:");
                     input.next(); //clear wrong input because scanner does not
@@ -113,14 +114,14 @@ public class DrinksAppManager {
             } catch (DrinkAlreadyExistsException d) {
                 System.out.println("Drink Already Exists. Please try again\n");
             } catch (Exception e) {
-                System.out.println("System does not recognize input");
+                e.printStackTrace();
+                System.out.println("System does not recognize input!");
                 System.out.println("Please try again: ");
                 selection = input.nextInt();
             }
         }
     }
 
-    //TODO: implement addDrink method in here
     public void newDrinkSelection(int i) throws DrinkAlreadyExistsException {
         DrinkAbstract drinkTemp = null;
         Scanner input = new Scanner(System.in);
@@ -179,52 +180,42 @@ public class DrinksAppManager {
             System.out.println("Drink removed from favourites list ");
         }
     }
-    //TODO: REIMPLEMENT insideList METHOD
-//    public void insideList(){
-//        boolean first = true;
-//
-//        if (dList.isEmpty()) {
-//            System.out.println("List is empty");
-//            first = false;
-//        }
-//
-//        for (Drink drink : dList) {
-//            System.out.println(drink.getName());
-//        }
-//
-//        Scanner input = new Scanner(System.in);
-//
-//        while (first == true) {
-//            boolean stat = true;
-//            System.out.println("Select drink (by name) or exit (type 'exit')");
-//            String name = input.nextLine();
-//            if (name.toLowerCase().equals("exit")) {
-//                first = false;
-//                break;
-//            }
-//
-//            while (stat) {
-//                for (DrinkAbstract drink : dList) {
-//                    if (drink.getName().equals(name)) {
-//                        System.out.println(drink.toString());
-//                        stat = false; //if this a drink matches, print to string
-//                        break; //break from this loop.
-//                    }
-//                }
-//                if (stat == false) { //this if statement checks whether the above loop found the object or not
-//                    break; //if it did find the object and print the info, break out of this while loop
-//                } //or else ask use to try again
-//                //if this parts run then the code above failed to find a drink
-//                System.out.println("Drink does not exist");
-//                System.out.println("Please try again: ");
-//                stat = false;
-//            }
-//        }
-//    }
-    //TODO: REIMPLEMENT insideList method into insideDrinkList method
+
     public void insideDrinkList() {
-        //be able to choose drinks and print out what it needs.
-        //be able to stay inside this sub menu or exit sub menu to main menu
+        boolean stat = true;
+
+        if (drinkList.isEmpty()) {
+            System.out.println("List is empty!");
+            stat = false;
+        }
+
+        if(!drinkList.isEmpty()){
+            drinkList.getList();
+        }
+        Scanner input = new Scanner(System.in);
+
+        while (stat == true) {
+            System.out.println("Select drink (by name) or exit (type 'exit')");
+            String name = input.nextLine();
+            if (name.toLowerCase().equals("exit")) {
+                stat = false;
+                break;
+            } else {
+                boolean stat2 = true;
+                while(stat2){
+                    if (drinkList.getDrinkName(name) == null) {
+                        System.out.println("Drink does not exist.");
+                        break;
+                    } else {
+                        System.out.println(drinkList.getDrinkName(name).toString());
+                        stat2 = false;
+                        //add extra functionality here
+                    }
+                }
+            }
+        }
+
+
     }
 
     public void saveDrinkList(DrinkList list, String filename) throws SaveFailedException{
@@ -240,11 +231,12 @@ public class DrinksAppManager {
             System.out.println("IOException caught");
         }
     }
+
     public void loadDrinkList(String filename) throws LoadFailException{
         DrinkList drinkListTemp = null;
         drinkList.clear();
 
-        FileInputStream fis = null;
+        FileInputStream fis;
         try {
             fis = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fis);
@@ -265,7 +257,7 @@ public class DrinksAppManager {
 
 
         if (drinkList != null) {
-            System.out.println("Save file loaded.");
+            System.out.println("Save file loaded.\n");
             System.out.println("File contains the following items:");
             drinkList.getList();
             System.out.println("\n");

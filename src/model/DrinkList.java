@@ -16,31 +16,38 @@ public class DrinkList extends AbstractList implements Serializable{
         favDList = new ArrayList<>();
     }
 
+
+    //this override is never used?
     @Override
     public int size() {
         return dList.size();
     }
 
+    //this override is also never used?
     @Override
     public Object get(int index) {
         DrinkAbstract dTemp = dList.get(index);
         return dTemp;
     }
 
-    //getters and setters
+    //GETTERS AND SETTERS (add,remove,etc):
 
     //add drink to main list
     public void addDrink(DrinkAbstract drink) throws DrinkAlreadyExistsException{
         if (!doesDrinkExist(drink)) {
             dList.add(drink);
-            System.out.println("Drink added.\n");
+            System.out.println("Drink added to main list.\n");
+        } else {
+            throw new DrinkAlreadyExistsException("Drink Already Exists!!!");
         }
     }
     //add drink to fav list
     public void addFavDrink(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException{
         if (!doesDrinkExist(drinkAbstract)) {
             favDList.add(drinkAbstract);
-            System.out.println("Drink added.\n");
+            System.out.println("Drink added to favourites list.\n");
+        } else {
+            throw new DrinkAlreadyExistsException("Drink Already Exists!!!");
         }
     }
     //Removes drink from main list
@@ -95,6 +102,19 @@ public class DrinkList extends AbstractList implements Serializable{
         return drinkTemp;
     }
 
+    public DrinkAbstract getDrinkName(String name) {
+        DrinkAbstract drinkTemp = null;
+        for(int i = 0; i < dList.size(); i++) {
+            if (dList.get(i).getName().equals(name)) {
+                drinkTemp = dList.get(i);
+            }
+//            if (i == dList.size() - 1) {
+//                System.out.println("Drink is not in the list!");
+//            }
+        }
+        return drinkTemp;
+    }
+
     public boolean doesDrinkExist(DrinkAbstract name) throws DrinkAlreadyExistsException{
         boolean bool = false;
         if(dList.contains(name)){
@@ -102,6 +122,8 @@ public class DrinkList extends AbstractList implements Serializable{
         }
         return bool;
     }
+
+
 
     public boolean doesFavDrinkExist(DrinkAbstract name) throws DrinkAlreadyExistsException{
         boolean bool = false;
@@ -143,6 +165,12 @@ public class DrinkList extends AbstractList implements Serializable{
         favDList.clear();
     }
 
-
+    @Override
+    public boolean isEmpty() {
+        if (dList.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 
 }

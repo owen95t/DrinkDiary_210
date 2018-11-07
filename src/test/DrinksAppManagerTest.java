@@ -52,15 +52,15 @@ class DrinksAppManagerTest {
 
     }
 
-    @Test
-    void loadFail() throws LoadFailException{
-        DrinksAppManager dam = new DrinksAppManager();
-
-        try {
-            dam.load("test2.txt"); //this file contains no objects
-        } catch (LoadFailException l) {
-            l.printStackTrace();
-        }
-    }
+//    @Test
+//    void loadFail() throws LoadFailException{
+//        DrinksAppManager dam = new DrinksAppManager();
+//
+//        try {
+//            dam.load("test2.txt"); //this file contains no objects
+//        } catch (LoadFailException l) {
+//            l.printStackTrace();
+//        }
+//    }
 
 }
