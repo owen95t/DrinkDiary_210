@@ -10,11 +10,12 @@ public class BeerObj extends DrinkAbstract implements Serializable {
 
     }
 
-    public BeerObj(String name, String alcPerc, String notes, String type) {
+    public BeerObj(String name, String alcPerc, String notes, String type, boolean fav) {
         this.name = name;
         this.alcPerc = alcPerc;
         this.notes = notes;
         this.type = type;
+        setFav(fav);
     }
 
     @Override

@@ -4,9 +4,9 @@ import exception.DrinkAlreadyExistsException;
 import exception.LoadFailException;
 import exception.SaveFailedException;
 import model.*;
-import sun.jvm.hotspot.gc_implementation.g1.G1Allocator;
 
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 public class GUI extends JFrame implements ActionListener{
     JPanel mainPanel, tmpPanel;
     JLabel lblName, lblType, lblAlcPerc, lblNotes, mainLabel, favLabel, favourited;
-    JTextField name, type, alcPerc, notes;
+    JTextField name, dType, alcPerc, notes;
     JList listMain, listFav;
-    JButton save, load, newDrink, addNew, cancel;
+    JButton save, load, newDrink, removeDrink, addNew, cancel;
     JScrollPane list1, list2;
     DrinkList drinkList = new DrinkList();
     DefaultListModel defaultList, defaultListFav;
@@ -32,11 +32,11 @@ public class GUI extends JFrame implements ActionListener{
     }
     public GUI() {
         super("Beer Diary");
-        setSize(400, 700);
+        setSize(700, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(10, 1));
+        mainPanel.setLayout(new GridLayout(5, 1));
         add(mainPanel);
 
         mainLabel = new JLabel("Main List:");
@@ -44,18 +44,23 @@ public class GUI extends JFrame implements ActionListener{
         tmpPanel.add(mainLabel);
         mainPanel.add(tmpPanel);
 
+        ListCellRenderer renderer = new TitleListCellRenderer();
 
         //Main List
 
         defaultList = new DefaultListModel();
-        defaultList.addElement("Test test test");
+
+        JList<DrinkList> testJList = new JList(drinkList.returnList().toArray());
 
         listMain = new JList(defaultList);
+//        listMain = new JList(drinkList.returnList().toArray());
         listMain.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listMain.setSelectedIndex(0);
         //listMain.addListSelectionListener(this);
         listMain.setVisibleRowCount(5);
         listMain.setLayoutOrientation(JList.VERTICAL);
+        listMain.addListSelectionListener(new myListHandler());
+        listMain.setCellRenderer(renderer);
         list1 = new JScrollPane(listMain);
         list1.setPreferredSize(new Dimension(200, 100));
         tmpPanel = new JPanel();
@@ -72,7 +77,6 @@ public class GUI extends JFrame implements ActionListener{
         mainPanel.add(tmpPanel);
 
         defaultListFav = new DefaultListModel();
-        defaultListFav.addElement("Test test test test");
 
         listFav = new JList(defaultListFav);
         listFav.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -80,6 +84,8 @@ public class GUI extends JFrame implements ActionListener{
 //        listFav.addListSelectionListener(this);
         listFav.setVisibleRowCount(5);
         listFav.setLayoutOrientation(JList.VERTICAL);
+        listFav.addListSelectionListener(new myListHandler());
+        listFav.setCellRenderer(renderer);
         list2 = new JScrollPane(listFav);
         list2.setPreferredSize(new Dimension(200, 100));
         tmpPanel = new JPanel();
@@ -88,19 +94,23 @@ public class GUI extends JFrame implements ActionListener{
 
         save = new JButton("Save");
         load = new JButton("Load");
+        removeDrink = new JButton("Remove Drink");
         newDrink = new JButton("New Drink");
         tmpPanel = new JPanel();
         tmpPanel.add(newDrink);
         tmpPanel.add(save);
         tmpPanel.add(load);
+        tmpPanel.add(removeDrink);
         mainPanel.add(tmpPanel);
 
         newDrink.setActionCommand("new");
-        newDrink.addActionListener(new myHandler());
+        newDrink.addActionListener(new newDrinkHandler());
         load.setActionCommand("load");
         load.addActionListener(this);
-        save.setActionCommand("myButton");
+        save.setActionCommand("save");
         save.addActionListener(this);
+        removeDrink.setActionCommand("remove");
+        removeDrink.addActionListener(this);
 
         listMain.addMouseListener(new myMouseHandler());
         listFav.addMouseListener(new myMouseHandler());
@@ -108,9 +118,7 @@ public class GUI extends JFrame implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent event){
-        if (event.getActionCommand().equals("myButton")) {
-            favLabel.setText("It works");
-        } else if (event.getActionCommand().equals("load")) {
+        if (event.getActionCommand().equals("load")) {
             try {
                 load();
             } catch (LoadFailException l) {
@@ -122,10 +130,18 @@ public class GUI extends JFrame implements ActionListener{
             } catch (SaveFailedException s) {
                 s.printStackTrace();
             }
+        } else if (event.getActionCommand().equals("remove")) {
+            removeHelper();
         }
     }
+
+    public void removeHelper() {
+        DrinkAbstract tmp = (DrinkAbstract) listMain.getSelectedValue();
+        defaultListFav.removeElement(tmp);
+    }
+
     //for creating a new drink
-    private class myHandler implements ActionListener{
+    private class newDrinkHandler implements ActionListener{
         public void actionPerformed(ActionEvent event) {
             drinkDialog = new JFrame();
             drinkDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -140,13 +156,13 @@ public class GUI extends JFrame implements ActionListener{
             drinkDialog.add(tmpPanel);
 
             lblType = new JLabel("Type: ");
-            type = new JTextField(20);
+            dType = new JTextField(20);
             tmpPanel = new JPanel();
             tmpPanel.add(lblType);
-            tmpPanel.add(type);
+            tmpPanel.add(dType);
             drinkDialog.add(tmpPanel);
 
-            lblAlcPerc = new JLabel("Type: ");
+            lblAlcPerc = new JLabel("Alcohol Percentage: ");
             alcPerc = new JTextField(20);
             tmpPanel = new JPanel();
             tmpPanel.add(lblAlcPerc);
@@ -203,15 +219,20 @@ public class GUI extends JFrame implements ActionListener{
             addNew.setActionCommand("create");
             addNew.addActionListener(new myNewDrinkHandler());
             cancel.setActionCommand("close");
-            cancel.addActionListener(this);
+            cancel.addActionListener(new myDisposed());
 
             drinkDialog.setVisible(true);
+        }
+    }
+    private class myListHandler implements ListSelectionListener{
+        public void valueChanged(ListSelectionEvent event) {
+
         }
     }
 
     private class myDisposed implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            dispose();
+            drinkDialog.dispose();
         }
     }
 
@@ -233,14 +254,19 @@ public class GUI extends JFrame implements ActionListener{
             try {
                 if (Beer.isSelected()) {
                     createNew("beer");
+                    drinkDialog.dispose();
                 } else if (Wine.isSelected()) {
                     createNew("wine");
+                    drinkDialog.dispose();
                 } else if (Cider.isSelected()) {
                     createNew("cider");
+                    drinkDialog.dispose();
                 } else if (HardLiquor.isSelected()) {
                     createNew("hard liquor");
+                    drinkDialog.dispose();
                 } else if (Other.isSelected()) {
                     createNew("other");
+                    drinkDialog.dispose();
                 }
             } catch (DrinkAlreadyExistsException e) {
                 e.printStackTrace();
@@ -250,24 +276,49 @@ public class GUI extends JFrame implements ActionListener{
     }
 
     public void createNew(String type) throws DrinkAlreadyExistsException{
+        boolean fav = false;
+        if (yesFav.isSelected()) {
+            fav = true;
+        }
         if(type.toLowerCase().equals("beer")){
-            DrinkAbstract drink = new BeerObj();
+            DrinkAbstract drink = new BeerObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
             drinkList.addDrink(drink);
+            defaultList.addElement(drink);
+            favHelper(fav, drink);
         } else if(type.toLowerCase().equals("wine")){
-            DrinkAbstract drink = new WineObj();
+            DrinkAbstract drink = new WineObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
             drinkList.addDrink(drink);
+            defaultList.addElement(drink);
+            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("cider")) {
-            DrinkAbstract drink = new CiderObj();
+            DrinkAbstract drink = new CiderObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
             drinkList.addDrink(drink);
+            defaultList.addElement(drink);
+            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("hard liquor")) {
-            DrinkAbstract drink = new HardLiquorObj();
+            DrinkAbstract drink = new HardLiquorObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
             drinkList.addDrink(drink);
+            defaultList.addElement(drink);
+            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("other")) {
-            DrinkAbstract drink = new OtherObj();
+            DrinkAbstract drink = new OtherObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
             drinkList.addDrink(drink);
+            defaultList.addElement(drink);
+            favHelper(fav, drink);
         }
 
 
+    }
+    public void favHelper(boolean f,  DrinkAbstract drink){
+
+        try {
+            if (f) {
+                drinkList.addFavDrink(drink);
+                defaultListFav.addElement(drink);
+            }
+        } catch (DrinkAlreadyExistsException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -291,9 +342,19 @@ public class GUI extends JFrame implements ActionListener{
 
     public void save() throws SaveFailedException{
         drinkList.save();
-
     }
 
+    private class TitleListCellRenderer extends JLabel implements ListCellRenderer<DrinkAbstract> {
+
+        public TitleListCellRenderer() {
+            setOpaque(true);
+        }
+        @Override
+        public Component getListCellRendererComponent(JList<? extends DrinkAbstract> list, DrinkAbstract value, int index, boolean isSelected, boolean cellHasFocus) {
+            setText(value.getName());
+            return this;
+        }
+    }
 
 
 
