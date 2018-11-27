@@ -71,7 +71,8 @@ public class DrinksAppManager {
             drinkList.getList();
         } else if (x == 3) {
             System.out.println("Saving...");
-            saveDrinkList(drinkList, "DrinkListTest.txt");
+            //saveDrinkList(drinkList, "DrinkListTest.txt");
+            drinkList.save();
             System.out.println("File saved\n");
         } else if (x == 4) {
             insideDrinkList();
@@ -79,7 +80,8 @@ public class DrinksAppManager {
             removeDrinkList();
         } else if (x == 6) {
             System.out.println("Loading...");
-            loadDrinkList("DrinkListTest.txt");
+            //loadDrinkList("DrinkListTest.txt");
+            drinkList.load();
         } else if (x == 7) {
             System.out.println("Exiting. Goodbye!");
             status = false;
@@ -153,7 +155,8 @@ public class DrinksAppManager {
         drinkTemp.setNotes(input.nextLine());
         System.out.println("Add drink to favourite list? (yes/no)");
 
-        if (input.nextLine().equals("yes")) {
+        if (input.nextLine().toLowerCase().equals("yes")) {
+            drinkTemp.setFav(true);
             drinkList.addFavDrink(drinkTemp);
         }
         drinkList.addDrink(drinkTemp);
@@ -194,7 +197,7 @@ public class DrinksAppManager {
         }
         Scanner input = new Scanner(System.in);
 
-        while (stat == true) {
+        while (stat) {
             System.out.println("Select drink (by name) or exit (type 'exit')");
             String name = input.nextLine();
             if (name.toLowerCase().equals("exit")) {
@@ -209,13 +212,11 @@ public class DrinksAppManager {
                     } else {
                         System.out.println(drinkList.getDrinkName(name).toString());
                         stat2 = false;
-                        //add extra functionality here
+                        //TODO: add extra functionality here
                     }
                 }
             }
         }
-
-
     }
 
     public void saveDrinkList(DrinkList list, String filename) throws SaveFailedException{
@@ -264,5 +265,6 @@ public class DrinksAppManager {
         }
 
     }
+
 
 }

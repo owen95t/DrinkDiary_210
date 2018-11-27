@@ -1,8 +1,10 @@
 package model;
 
 import exception.DrinkAlreadyExistsException;
+import exception.LoadFailException;
+import exception.SaveFailedException;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.AbstractList;
 import java.util.ArrayList;
 
@@ -124,7 +126,6 @@ public class DrinkList extends AbstractList implements Serializable{
     }
 
 
-
     public boolean doesFavDrinkExist(DrinkAbstract name) throws DrinkAlreadyExistsException{
         boolean bool = false;
         if (favDList.contains(name)) {
@@ -157,6 +158,66 @@ public class DrinkList extends AbstractList implements Serializable{
             }
         }
 
+
+    }
+
+    public void transferList1(ArrayList<DrinkAbstract> list1) {
+        this.dList = list1;
+    }
+
+    public void transferList2(ArrayList<DrinkAbstract> list2) {
+        this.favDList = list2;
+    }
+
+    public ArrayList returnList() {
+        return dList;
+    }
+
+    public ArrayList returnFavList() {
+        return favDList;
+    }
+
+    public void save() throws SaveFailedException{
+        DrinkList tmp = new DrinkList();
+        tmp.transferList1(dList);
+        tmp.transferList2(favDList);
+
+        try {
+            FileOutputStream fileOutput = new FileOutputStream("DrinkListSave.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOutput);
+            out.writeObject(tmp);
+            out.close();
+            fileOutput.close();
+        } catch (SaveFailedException s) {
+            throw new SaveFailedException();
+        } catch (IOException e) {
+            System.out.println("IOException caught");
+        }
+    }
+
+    public void load() throws LoadFailException{
+        DrinkList drinkListTemp = null;
+        this.clear();
+
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream("DrinkListSave.txt");
+            ObjectInputStream in = new ObjectInputStream(fis);
+            drinkListTemp = (DrinkList) in.readObject();
+            fis.close();
+            in.close();
+        } catch (LoadFailException l) {
+            System.out.println("Load Failed.");
+            l.printStackTrace();
+            System.out.println(l.toString());
+        } catch (Exception e) {
+            System.out.println("IOException caught");
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+
+        transferList1(drinkListTemp.returnList());
+        transferList2(drinkListTemp.returnFavList());
 
     }
 
