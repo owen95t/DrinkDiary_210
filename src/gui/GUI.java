@@ -16,15 +16,18 @@ public class GUI extends JFrame implements ActionListener{
     JLabel lblName, lblType, lblAlcPerc, lblNotes, mainLabel, favLabel, favourited;
     JTextField name, dType, alcPerc, notes;
     JList listMain, listFav;
+    JList<DrinkAbstract> testJList;
     JButton save, load, newDrink, removeDrink, addNew, cancel;
     JScrollPane list1, list2;
-    DrinkList drinkList = new DrinkList();
     DefaultListModel defaultList, defaultListFav;
     JOptionPane newDrinkPopUp;
     JRadioButton Beer, Wine, Cider, HardLiquor, Other, yesFav, notFav;
-    JDialog newDrinkDialog;
+    JDialog drinkAlreadyExistsDialog;
     JFrame drinkDialog;
     ButtonGroup G1, G2;
+
+    DrinkList drinkList;
+    DrinkAbstract Beer1, Beer2;
 
     public static void main(String[] args) {
         GUI gui = new GUI();
@@ -32,8 +35,18 @@ public class GUI extends JFrame implements ActionListener{
     }
     public GUI() {
         super("Beer Diary");
-        setSize(700, 500);
+        setSize(600, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        drinkList = new DrinkList();
+        DrinkAbstract Beer1 = new BeerObj("Kokanee", "5", "Lager", "Good", false);
+        DrinkAbstract Beer2 = new BeerObj("Molson", "5", "Lager", "Good", false);
+        try {
+            drinkList.addDrink(Beer1);
+            drinkList.addDrink(Beer2);
+        } catch (DrinkAlreadyExistsException e) {
+            System.out.println("Drink Already Exists");
+        }
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayout(5, 1));
@@ -48,25 +61,18 @@ public class GUI extends JFrame implements ActionListener{
 
         //Main List
 
-        defaultList = new DefaultListModel();
+        testJList = new JList(drinkList.returnList().toArray());
+        testJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        testJList.setCellRenderer(renderer);
+        testJList.setSelectedIndex(0);
+        testJList.setVisibleRowCount(5);
+        testJList.addListSelectionListener(new myListHandler());
 
-        JList<DrinkList> testJList = new JList(drinkList.returnList().toArray());
-
-        listMain = new JList(defaultList);
-//        listMain = new JList(drinkList.returnList().toArray());
-        listMain.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listMain.setSelectedIndex(0);
-        //listMain.addListSelectionListener(this);
-        listMain.setVisibleRowCount(5);
-        listMain.setLayoutOrientation(JList.VERTICAL);
-        listMain.addListSelectionListener(new myListHandler());
-        listMain.setCellRenderer(renderer);
-        list1 = new JScrollPane(listMain);
+        list1 = new JScrollPane(testJList);
         list1.setPreferredSize(new Dimension(200, 100));
         tmpPanel = new JPanel();
         tmpPanel.add(list1);
         mainPanel.add(tmpPanel);
-
 
         //Fav List
 
@@ -112,7 +118,7 @@ public class GUI extends JFrame implements ActionListener{
         removeDrink.setActionCommand("remove");
         removeDrink.addActionListener(this);
 
-        listMain.addMouseListener(new myMouseHandler());
+        //listMain.addMouseListener(new myMouseHandler());
         listFav.addMouseListener(new myMouseHandler());
 
     }
@@ -226,7 +232,9 @@ public class GUI extends JFrame implements ActionListener{
     }
     private class myListHandler implements ListSelectionListener{
         public void valueChanged(ListSelectionEvent event) {
+            if (event.getValueIsAdjusting() == false) {
 
+            }
         }
     }
 
@@ -270,6 +278,7 @@ public class GUI extends JFrame implements ActionListener{
                 }
             } catch (DrinkAlreadyExistsException e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Drink Already Exists!");
             }
 
         }
@@ -307,7 +316,7 @@ public class GUI extends JFrame implements ActionListener{
             favHelper(fav, drink);
         }
 
-
+        testJList.updateUI();
     }
     public void favHelper(boolean f,  DrinkAbstract drink){
 
@@ -318,6 +327,7 @@ public class GUI extends JFrame implements ActionListener{
             }
         } catch (DrinkAlreadyExistsException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Drink Already Exists!");
         }
     }
 
@@ -337,7 +347,6 @@ public class GUI extends JFrame implements ActionListener{
             defaultListFav.addElement(drink);
         }
 
-
     }
 
     public void save() throws SaveFailedException{
@@ -352,6 +361,26 @@ public class GUI extends JFrame implements ActionListener{
         @Override
         public Component getListCellRendererComponent(JList<? extends DrinkAbstract> list, DrinkAbstract value, int index, boolean isSelected, boolean cellHasFocus) {
             setText(value.getName());
+
+            Color foreground;
+            Color background;
+            JList.DropLocation dropLocation = list.getDropLocation();
+            if (dropLocation != null
+                    && !dropLocation.isInsert()
+                    && dropLocation.getIndex() == index) {
+
+                background = Color.BLUE;
+                foreground = Color.WHITE;
+            }else if (isSelected) {
+                background = Color.BLUE;
+                foreground = Color.WHITE;
+            } else {
+                background = Color.WHITE;
+                foreground = Color.BLACK;
+            }
+            setBackground(background);
+            setForeground(foreground);
+
             return this;
         }
     }
