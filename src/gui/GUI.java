@@ -39,7 +39,7 @@ public class GUI extends JFrame implements ActionListener{
         super("Drink Diary");
 
 
-        setSize(650, 450);
+        setSize(650, 350);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         drinkList = new DrinkList();
@@ -66,37 +66,13 @@ public class GUI extends JFrame implements ActionListener{
 
 
         list1 = new JScrollPane(listMain);
-        list1.setPreferredSize(new Dimension(450, 300));
+        list1.setPreferredSize(new Dimension(300, 200));
         tmpPanel = new JPanel();
         tmpPanel.add(list1);
         mainPanel.add(tmpPanel, BorderLayout.CENTER);
 
         listSelectionModel = listMain.getSelectionModel();
         listSelectionModel.addListSelectionListener(new myListHandler());
-
-
-        //Fav List
-
-
-//        favLabel = new JLabel("Favourites List:");
-//        tmpPanel = new JPanel();
-//        tmpPanel.add(favLabel);
-//        mainPanel.add(tmpPanel);
-
-//        defaultListFav = new DefaultListModel();
-//
-//        listFav = new JList(defaultListFav);
-//        listFav.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        listFav.setSelectedIndex(0);
-//        listFav.setVisibleRowCount(5);
-//        listFav.setLayoutOrientation(JList.VERTICAL);
-//        listFav.addListSelectionListener(new myListHandler());
-//        listFav.setCellRenderer(renderer);
-//        list2 = new JScrollPane(listFav);
-//        list2.setPreferredSize(new Dimension(200, 100));
-//        tmpPanel = new JPanel();
-//        tmpPanel.add(list2);
-//        mainPanel.add(tmpPanel);
 
         save = new JButton("Save");
         load = new JButton("Load");
@@ -175,7 +151,7 @@ public class GUI extends JFrame implements ActionListener{
             int index = listMain.getSelectedIndex();
             if (index >= 0) { //Remove only if a particular item is selected
                 DrinkAbstract drinkRemoved = (DrinkAbstract) defaultList.getElementAt(index);
-                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete?", "Remove confirm", JOptionPane.YES_NO_OPTION);
+                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " + drinkRemoved.getName() + "?", "Remove confirm", JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.YES_OPTION) {
                     drinkList.removeDrink(drinkRemoved);
                     defaultList.removeElementAt(index);
@@ -370,9 +346,19 @@ public class GUI extends JFrame implements ActionListener{
 
     public void load() throws LoadFailException{
         drinkList.load();
-
-        defaultList.clear();
+//        //I want to add all the current objects into list
+//        ArrayList<DrinkAbstract> tempList = new ArrayList<>();
+//        for(int i = 0; i < defaultList.size(); i++) {
+//            tempList.add((DrinkAbstract) defaultList.getElementAt(i));
+//        }
+//
+//        defaultList.clear();
         ArrayList<DrinkAbstract> mainL = drinkList.returnList();
+//        if(!tempList.isEmpty()){
+//            for (DrinkAbstract drink : tempList) {
+//                defaultList.addElement(drink);
+//            }
+//        }
         for (DrinkAbstract drink : mainL) {
             defaultList.addElement(drink);
         }
