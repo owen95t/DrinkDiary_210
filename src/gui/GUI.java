@@ -85,15 +85,15 @@ public class GUI extends JFrame implements ActionListener{
         load = new JButton("Load");
         removeDrink = new JButton("Remove Drink");
         newDrink = new JButton("New Drink");
-        favMarker = new JButton("Favourite");
-        unFavMarker = new JButton("Unfavourite");
+        favMarker = new JButton("Favourite/Unfavourite");
+//        unFavMarker = new JButton("Unfavourite");
         JPanel buttonPane = new JPanel();
         buttonPane.add(newDrink);
         buttonPane.add(save);
         buttonPane.add(load);
         buttonPane.add(removeDrink);
         buttonPane.add(favMarker);
-        buttonPane.add(unFavMarker);
+//        buttonPane.add(unFavMarker);
         mainPanel.add(buttonPane, BorderLayout.SOUTH);
 
         newDrink.setActionCommand("new");
@@ -106,8 +106,8 @@ public class GUI extends JFrame implements ActionListener{
         removeDrink.addActionListener(new myRemoveHelper());
         favMarker.setActionCommand("fav");
         favMarker.addActionListener(new myFavouriteHelper());
-        unFavMarker.setActionCommand("unfav");
-        unFavMarker.addActionListener(new myFavouriteHelper());
+//        unFavMarker.setActionCommand("unfav");
+//        unFavMarker.addActionListener(new myFavouriteHelper());
 
         listMain.addMouseListener(new myMouseHandler());
 
