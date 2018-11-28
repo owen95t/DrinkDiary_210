@@ -3,12 +3,14 @@ package gui;
 import exception.DrinkAlreadyExistsException;
 import exception.LoadFailException;
 import exception.SaveFailedException;
+import jdk.nashorn.internal.scripts.JO;
 import model.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener{
@@ -26,21 +28,25 @@ public class GUI extends JFrame implements ActionListener{
     JFrame drinkDialog;
     ButtonGroup G1, G2;
 
+    private JTextField filename = new JTextField(), dir = new JTextField();
+
     ListSelectionModel listSelectionModel;
 
     DrinkList drinkList;
-    DrinkAbstract Beer1, Beer2;
+
+    public boolean saveState;
+
+
 
     public static void main(String[] args) {
         GUI gui = new GUI();
         gui.setVisible(true);
     }
+
     public GUI() {
         super("Drink Diary");
 
-
         setSize(650, 350);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         drinkList = new DrinkList();
 
@@ -52,7 +58,8 @@ public class GUI extends JFrame implements ActionListener{
         tmpPanel.add(mainLabel);
         mainPanel.add(tmpPanel);
 
-        //so it does not show toString, we use a CellRenderer which we can manipulate how it renders what it shows
+        //Because JList/DefaultListModel shows .toString() as the title we need to change it
+        //With ListCellRenderer, it does not show toString, we use a CellRenderer which we can manipulate how it renders what it shows
         ListCellRenderer renderer = new TitleListCellRenderer();
 
         //Main List
@@ -104,6 +111,93 @@ public class GUI extends JFrame implements ActionListener{
 
         listMain.addMouseListener(new myMouseHandler());
 
+        this.addWindowListener(new myWindowHandler());
+
+        //ATTEMPT AT JMenuBar
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu menuFile = new JMenu("File");
+        JMenu menuHelp = new JMenu("Help");
+        menuBar.add(menuFile);
+        menuBar.add(menuHelp);
+
+        JMenuItem fOpen = new JMenuItem("Open file");
+        JMenuItem fSave = new JMenuItem("Save file");
+        JMenuItem fExit = new JMenuItem("Exit");
+        menuFile.add(fOpen);
+        menuFile.add(fSave);
+        menuFile.add(fExit);
+
+        fOpen.addActionListener(new myOpenFileHandler());
+        fSave.addActionListener(new mySaveFileHandler());
+
+    }
+
+    private class myOpenFileHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser jfc = new JFileChooser();
+            int rVal = jfc.showOpenDialog(GUI.this);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                File file = jfc.getSelectedFile();
+                String name = file.getName();
+                try {
+                    load(name);
+                } catch (LoadFailException l) {
+                    JOptionPane.showMessageDialog(null, "Load Failed!");
+                }
+//                filename.setText(jfc.getSelectedFile().getName());
+//                dir.setText(jfc.getCurrentDirectory().toString());
+            }
+            if (rVal == JFileChooser.CANCEL_OPTION) {
+                filename.setText("You pressed cancel");
+                dir.setText("");
+            }
+        }
+    }
+
+    private class mySaveFileHandler implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            JFileChooser c = new JFileChooser();
+            // Demonstrate "Save" dialog:
+            int rVal = c.showSaveDialog(GUI.this);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                File file = c.getSelectedFile();
+                String name = file.getName()+".txt";
+                try {
+                    save(name);
+                } catch (SaveFailedException s) {
+                    JOptionPane.showMessageDialog(null, "Save failed!");
+                }
+//                filename.setText(c.getSelectedFile().getName());
+//                dir.setText(c.getCurrentDirectory().toString());
+            }
+            if (rVal == JFileChooser.CANCEL_OPTION) {
+                filename.setText("You pressed cancel");
+                dir.setText("");
+            }
+        }
+    }
+
+
+    private class myWindowHandler extends WindowAdapter{
+        public void windowClosing(WindowEvent event) {
+            int reply = 0;
+            if (saveState) {
+                reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Exit confirm", JOptionPane.YES_NO_OPTION);
+            } else if (!saveState) {
+                reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit without saving?", "Exit confirm", JOptionPane.YES_NO_OPTION);
+            }
+
+            if (reply == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } else {
+                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent event){
@@ -112,12 +206,14 @@ public class GUI extends JFrame implements ActionListener{
                 load();
             } catch (LoadFailException l) {
                 l.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Load failed!");
             }
         } else if (event.getActionCommand().equals("save")) {
             try {
                 save();
             } catch (SaveFailedException s) {
                 s.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Save failed!");
             }
         }
     }
@@ -151,7 +247,7 @@ public class GUI extends JFrame implements ActionListener{
             int index = listMain.getSelectedIndex();
             if (index >= 0) { //Remove only if a particular item is selected
                 DrinkAbstract drinkRemoved = (DrinkAbstract) defaultList.getElementAt(index);
-                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " + drinkRemoved.getName() + "?", "Remove confirm", JOptionPane.YES_NO_OPTION);
+                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " + drinkRemoved.getName() + " " + drinkRemoved.getType() + "?", "Remove confirm", JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.YES_OPTION) {
                     drinkList.removeDrink(drinkRemoved);
                     defaultList.removeElementAt(index);
@@ -160,7 +256,7 @@ public class GUI extends JFrame implements ActionListener{
         }
     }
 
-    //for creating a new drink
+    //for creating a new drink GUI popup
     private class newDrinkHandler implements ActionListener{
         public void actionPerformed(ActionEvent event) {
             drinkDialog = new JFrame();
@@ -346,27 +442,33 @@ public class GUI extends JFrame implements ActionListener{
 
     public void load() throws LoadFailException{
         drinkList.load();
-//        //I want to add all the current objects into list
-//        ArrayList<DrinkAbstract> tempList = new ArrayList<>();
-//        for(int i = 0; i < defaultList.size(); i++) {
-//            tempList.add((DrinkAbstract) defaultList.getElementAt(i));
-//        }
-//
-//        defaultList.clear();
+        defaultList.clear();
         ArrayList<DrinkAbstract> mainL = drinkList.returnList();
-//        if(!tempList.isEmpty()){
-//            for (DrinkAbstract drink : tempList) {
-//                defaultList.addElement(drink);
-//            }
-//        }
         for (DrinkAbstract drink : mainL) {
             defaultList.addElement(drink);
         }
+        saveState = false;
+    }
+
+    public void load(String filename) throws LoadFailException{
+        drinkList.load(filename);
+        defaultList.clear();
+        ArrayList<DrinkAbstract> mainL = drinkList.returnList();
+        for (DrinkAbstract drink : mainL) {
+            defaultList.addElement(drink);
+        }
+        saveState = false;
     }
 
     public void save() throws SaveFailedException{
         drinkList.save();
         JOptionPane.showMessageDialog(null, "File Saved.");
+        saveState = true;
+    }
+    public void save(String filename) throws SaveFailedException{
+        drinkList.save(filename);
+        JOptionPane.showMessageDialog(null, "File Saved.");
+        saveState = true;
     }
 
     private class TitleListCellRenderer extends JLabel implements ListCellRenderer<DrinkAbstract> {

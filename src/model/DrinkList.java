@@ -195,6 +195,24 @@ public class DrinkList extends AbstractList implements Serializable{
         }
     }
 
+    public void save(String filename) throws SaveFailedException{
+        DrinkList tmp = new DrinkList();
+        tmp.transferList1(dList);
+        tmp.transferList2(favDList);
+
+        try {
+            FileOutputStream fileOutput = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fileOutput);
+            out.writeObject(tmp);
+            out.close();
+            fileOutput.close();
+        } catch (SaveFailedException s) {
+            throw new SaveFailedException();
+        } catch (IOException e) {
+            System.out.println("IOException caught");
+        }
+    }
+
     public void load() throws LoadFailException{
         DrinkList drinkListTemp = null;
         this.clear();
@@ -202,6 +220,32 @@ public class DrinkList extends AbstractList implements Serializable{
         FileInputStream fis;
         try {
             fis = new FileInputStream("DrinkListSave.txt");
+            ObjectInputStream in = new ObjectInputStream(fis);
+            drinkListTemp = (DrinkList) in.readObject();
+            fis.close();
+            in.close();
+        } catch (LoadFailException l) {
+            System.out.println("Load Failed.");
+            l.printStackTrace();
+            System.out.println(l.toString());
+        } catch (Exception e) {
+            System.out.println("IOException caught");
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+
+        transferList1(drinkListTemp.returnList());
+        transferList2(drinkListTemp.returnFavList());
+
+    }
+
+    public void load(String filename) throws LoadFailException{
+        DrinkList drinkListTemp = null;
+        this.clear();
+
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream(filename);
             ObjectInputStream in = new ObjectInputStream(fis);
             drinkListTemp = (DrinkList) in.readObject();
             fis.close();
