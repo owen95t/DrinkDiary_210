@@ -63,7 +63,7 @@ public abstract class DrinkAbstract implements Serializable, Drink{
 
     public String isFav() {
         if (fav) {
-            return "Favourited";
+            return "*";
         }
         return "";
     }

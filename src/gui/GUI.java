@@ -17,7 +17,7 @@ public class GUI extends JFrame implements ActionListener{
     JTextField name, dType, alcPerc, notes;
     JList listMain, listFav;
     JList<DrinkAbstract> testJList;
-    JButton save, load, newDrink, removeDrink, addNew, cancel, favMarker;
+    JButton save, load, newDrink, removeDrink, addNew, cancel, favMarker, unFavMarker;
     JScrollPane list1, list2;
     DefaultListModel defaultList, defaultListFav;
     JOptionPane newDrinkPopUp;
@@ -36,31 +36,23 @@ public class GUI extends JFrame implements ActionListener{
         gui.setVisible(true);
     }
     public GUI() {
-        super("Beer Diary");
+        super("Drink Diary");
 
 
-        setSize(600, 400);
+        setSize(650, 450);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         drinkList = new DrinkList();
-        DrinkAbstract Beer1 = new BeerObj("Kokanee", "5", "Lager", "Good", false);
-        DrinkAbstract Beer2 = new BeerObj("Molson", "5", "Lager", "Good", false);
-        try {
-            drinkList.addDrink(Beer1);
-            drinkList.addDrink(Beer2);
-        } catch (DrinkAlreadyExistsException e) {
-            System.out.println("Drink Already Exists");
-        }
 
         mainPanel = new JPanel();
-//        mainPanel.setLayout(new GridLayout(3, 1));
         add(mainPanel);
 
-        mainLabel = new JLabel("Main List:");
+        mainLabel = new JLabel("Welcome to your drink diary!\nHere is your drinks list");
         tmpPanel = new JPanel();
         tmpPanel.add(mainLabel);
         mainPanel.add(tmpPanel);
 
+        //so it does not show toString, we use a CellRenderer which we can manipulate how it renders what it shows
         ListCellRenderer renderer = new TitleListCellRenderer();
 
         //Main List
@@ -110,13 +102,15 @@ public class GUI extends JFrame implements ActionListener{
         load = new JButton("Load");
         removeDrink = new JButton("Remove Drink");
         newDrink = new JButton("New Drink");
-        favMarker = new JButton("Mark Favourite");
+        favMarker = new JButton("Favourite");
+        unFavMarker = new JButton("Unfavourite");
         JPanel buttonPane = new JPanel();
         buttonPane.add(newDrink);
         buttonPane.add(save);
         buttonPane.add(load);
         buttonPane.add(removeDrink);
         buttonPane.add(favMarker);
+        buttonPane.add(unFavMarker);
         mainPanel.add(buttonPane, BorderLayout.SOUTH);
 
         newDrink.setActionCommand("new");
@@ -129,6 +123,9 @@ public class GUI extends JFrame implements ActionListener{
         removeDrink.addActionListener(new myRemoveHelper());
         favMarker.setActionCommand("fav");
         favMarker.addActionListener(new myFavouriteHelper());
+        unFavMarker.setActionCommand("unfav");
+        unFavMarker.addActionListener(new myFavouriteHelper());
+
         listMain.addMouseListener(new myMouseHandler());
 
     }
@@ -153,7 +150,22 @@ public class GUI extends JFrame implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            DrinkAbstract drinkTemp = null;
+            int index = listMain.getSelectedIndex();
+            if (index >= 0) {
+                drinkTemp = (DrinkAbstract) defaultList.getElementAt(index);
+                if (drinkTemp != null) {
+                    if (!drinkTemp.getFav()) {
+                        DrinkAbstract drinkReplacement = drinkTemp;
+                        drinkReplacement.setFav(true);
+                        defaultList.set(index, drinkReplacement);
+                    } else if (drinkTemp.getFav()) {
+                        DrinkAbstract drinkReplacement = drinkTemp;
+                        drinkReplacement.setFav(false);
+                        defaultList.set(index, drinkReplacement);
+                    }
+                }
+            }
         }
     }
 
@@ -163,8 +175,11 @@ public class GUI extends JFrame implements ActionListener{
             int index = listMain.getSelectedIndex();
             if(index >= 0){ //Remove only if a particular item is selected
                 DrinkAbstract drinkRemoved = (DrinkAbstract) defaultList.getElementAt(index);
-                drinkList.removeDrink(drinkRemoved);
-                defaultList.removeElementAt(index);
+                int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete?", "Remove confirm", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    drinkList.removeDrink(drinkRemoved);
+                    defaultList.removeElementAt(index);
+                }
             }
         }
     }
@@ -268,7 +283,7 @@ public class GUI extends JFrame implements ActionListener{
                 // Find out which indexes are selected.
                 int minIndex = lsm.getMinSelectionIndex();
                 int maxIndex = lsm.getMaxSelectionIndex();
-                for (int i = minIndex; i <= maxIndex; i++) {
+                for (int i = minIndex; i < maxIndex; i++) {
                     if (lsm.isSelectedIndex(i)) {
                         System.out.println(" " + i);
                     }
@@ -353,19 +368,6 @@ public class GUI extends JFrame implements ActionListener{
         }
     }
 
-//    public void favHelper(boolean f,  DrinkAbstract drink){
-//        try {
-//            if (f) {
-//                drinkList.addFavDrink(drink);
-//            }
-//        } catch (DrinkAlreadyExistsException e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(null, "Drink exists!");
-//        }
-//
-//    }
-
-
     public void load() throws LoadFailException{
         drinkList.load();
 
@@ -388,7 +390,7 @@ public class GUI extends JFrame implements ActionListener{
         @Override
         public Component getListCellRendererComponent(JList<? extends DrinkAbstract> list, DrinkAbstract value, int index, boolean isSelected, boolean cellHasFocus) {
 
-            setText(value.getName() + " " + value.getType() + "                                     " +value.isFav());
+            setText(value.getName() + " " + value.getType() + " " +value.isFav());
 
             Color foreground;
             Color background;
