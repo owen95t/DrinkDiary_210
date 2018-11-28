@@ -183,7 +183,7 @@ public class GUI extends JFrame implements ActionListener{
             }
         }
     }
-    
+
     //for creating a new drink
     private class newDrinkHandler implements ActionListener{
         public void actionPerformed(ActionEvent event) {
