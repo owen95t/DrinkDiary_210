@@ -53,7 +53,7 @@ public class DrinkList extends AbstractList implements Serializable{
         }
     }
     //Removes drink from main list
-    public void removeDrink(DrinkAbstract drinkAbstract) throws DrinkAlreadyExistsException{
+    public void removeDrink(DrinkAbstract drinkAbstract){
         if (doesDrinkExist(drinkAbstract)) {
             dList.remove(drinkAbstract);
             System.out.println("Drink removed.\n");
@@ -117,7 +117,7 @@ public class DrinkList extends AbstractList implements Serializable{
         return drinkTemp;
     }
 
-    public boolean doesDrinkExist(DrinkAbstract name) throws DrinkAlreadyExistsException{
+    public boolean doesDrinkExist(DrinkAbstract name){
         boolean bool = false;
         if(dList.contains(name)){
             bool = true;

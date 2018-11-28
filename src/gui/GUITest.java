@@ -83,6 +83,13 @@ public class GUITest extends JPanel implements ListSelectionListener{
         frame.setVisible(true);
     }
 
+    public class myAddDrinkHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
     @Override
     public void valueChanged(ListSelectionEvent e) {
 

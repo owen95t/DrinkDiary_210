@@ -17,7 +17,7 @@ public class GUI extends JFrame implements ActionListener{
     JTextField name, dType, alcPerc, notes;
     JList listMain, listFav;
     JList<DrinkAbstract> testJList;
-    JButton save, load, newDrink, removeDrink, addNew, cancel;
+    JButton save, load, newDrink, removeDrink, addNew, cancel, favMarker;
     JScrollPane list1, list2;
     DefaultListModel defaultList, defaultListFav;
     JOptionPane newDrinkPopUp;
@@ -25,6 +25,8 @@ public class GUI extends JFrame implements ActionListener{
     JDialog drinkAlreadyExistsDialog;
     JFrame drinkDialog;
     ButtonGroup G1, G2;
+
+    ListSelectionModel listSelectionModel;
 
     DrinkList drinkList;
     DrinkAbstract Beer1, Beer2;
@@ -35,7 +37,9 @@ public class GUI extends JFrame implements ActionListener{
     }
     public GUI() {
         super("Beer Diary");
-        setSize(600, 500);
+
+
+        setSize(600, 400);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         drinkList = new DrinkList();
@@ -49,7 +53,7 @@ public class GUI extends JFrame implements ActionListener{
         }
 
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(5, 1));
+//        mainPanel.setLayout(new GridLayout(3, 1));
         add(mainPanel);
 
         mainLabel = new JLabel("Main List:");
@@ -60,54 +64,60 @@ public class GUI extends JFrame implements ActionListener{
         ListCellRenderer renderer = new TitleListCellRenderer();
 
         //Main List
+        defaultList = new DefaultListModel();
+        listMain = new JList(defaultList);
+        listMain.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listMain.setSelectedIndex(0);
+        listMain.setVisibleRowCount(5);
+        //listMain.addListSelectionListener(new myListHandler());
+        listMain.setCellRenderer(renderer);
 
-        testJList = new JList(drinkList.returnList().toArray());
-        testJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        testJList.setCellRenderer(renderer);
-        testJList.setSelectedIndex(0);
-        testJList.setVisibleRowCount(5);
-        testJList.addListSelectionListener(new myListHandler());
 
-        list1 = new JScrollPane(testJList);
-        list1.setPreferredSize(new Dimension(200, 100));
+        list1 = new JScrollPane(listMain);
+        list1.setPreferredSize(new Dimension(450, 300));
         tmpPanel = new JPanel();
         tmpPanel.add(list1);
-        mainPanel.add(tmpPanel);
+        mainPanel.add(tmpPanel, BorderLayout.CENTER);
+
+        listSelectionModel = listMain.getSelectionModel();
+        listSelectionModel.addListSelectionListener(new myListHandler());
+
 
         //Fav List
 
 
-        favLabel = new JLabel("Favourites List:");
-        tmpPanel = new JPanel();
-        tmpPanel.add(favLabel);
-        mainPanel.add(tmpPanel);
+//        favLabel = new JLabel("Favourites List:");
+//        tmpPanel = new JPanel();
+//        tmpPanel.add(favLabel);
+//        mainPanel.add(tmpPanel);
 
-        defaultListFav = new DefaultListModel();
-
-        listFav = new JList(defaultListFav);
-        listFav.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listFav.setSelectedIndex(0);
-//        listFav.addListSelectionListener(this);
-        listFav.setVisibleRowCount(5);
-        listFav.setLayoutOrientation(JList.VERTICAL);
-        listFav.addListSelectionListener(new myListHandler());
-        listFav.setCellRenderer(renderer);
-        list2 = new JScrollPane(listFav);
-        list2.setPreferredSize(new Dimension(200, 100));
-        tmpPanel = new JPanel();
-        tmpPanel.add(list2);
-        mainPanel.add(tmpPanel);
+//        defaultListFav = new DefaultListModel();
+//
+//        listFav = new JList(defaultListFav);
+//        listFav.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        listFav.setSelectedIndex(0);
+//        listFav.setVisibleRowCount(5);
+//        listFav.setLayoutOrientation(JList.VERTICAL);
+//        listFav.addListSelectionListener(new myListHandler());
+//        listFav.setCellRenderer(renderer);
+//        list2 = new JScrollPane(listFav);
+//        list2.setPreferredSize(new Dimension(200, 100));
+//        tmpPanel = new JPanel();
+//        tmpPanel.add(list2);
+//        mainPanel.add(tmpPanel);
 
         save = new JButton("Save");
         load = new JButton("Load");
         removeDrink = new JButton("Remove Drink");
         newDrink = new JButton("New Drink");
-        tmpPanel = new JPanel();
-        tmpPanel.add(newDrink);
-        tmpPanel.add(save);
-        tmpPanel.add(load);
-        tmpPanel.add(removeDrink);
-        mainPanel.add(tmpPanel);
+        favMarker = new JButton("Mark Favourite");
+        JPanel buttonPane = new JPanel();
+        buttonPane.add(newDrink);
+        buttonPane.add(save);
+        buttonPane.add(load);
+        buttonPane.add(removeDrink);
+        buttonPane.add(favMarker);
+        mainPanel.add(buttonPane, BorderLayout.SOUTH);
 
         newDrink.setActionCommand("new");
         newDrink.addActionListener(new newDrinkHandler());
@@ -116,10 +126,10 @@ public class GUI extends JFrame implements ActionListener{
         save.setActionCommand("save");
         save.addActionListener(this);
         removeDrink.setActionCommand("remove");
-        removeDrink.addActionListener(this);
-
-        //listMain.addMouseListener(new myMouseHandler());
-        listFav.addMouseListener(new myMouseHandler());
+        removeDrink.addActionListener(new myRemoveHelper());
+        favMarker.setActionCommand("fav");
+        favMarker.addActionListener(new myFavouriteHelper());
+        listMain.addMouseListener(new myMouseHandler());
 
     }
 
@@ -130,20 +140,33 @@ public class GUI extends JFrame implements ActionListener{
             } catch (LoadFailException l) {
                 l.printStackTrace();
             }
-        } else if (event.getActionCommand().equals("Save")) {
+        } else if (event.getActionCommand().equals("save")) {
             try {
                 save();
             } catch (SaveFailedException s) {
                 s.printStackTrace();
             }
-        } else if (event.getActionCommand().equals("remove")) {
-            removeHelper();
         }
     }
 
-    public void removeHelper() {
-        DrinkAbstract tmp = (DrinkAbstract) listMain.getSelectedValue();
-        defaultListFav.removeElement(tmp);
+    public class myFavouriteHelper implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    public class myRemoveHelper implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int index = listMain.getSelectedIndex();
+            if(index >= 0){ //Remove only if a particular item is selected
+                DrinkAbstract drinkRemoved = (DrinkAbstract) defaultList.getElementAt(index);
+                drinkList.removeDrink(drinkRemoved);
+                defaultList.removeElementAt(index);
+            }
+        }
     }
 
     //for creating a new drink
@@ -230,10 +253,26 @@ public class GUI extends JFrame implements ActionListener{
             drinkDialog.setVisible(true);
         }
     }
-    private class myListHandler implements ListSelectionListener{
-        public void valueChanged(ListSelectionEvent event) {
-            if (event.getValueIsAdjusting() == false) {
 
+    private class myListHandler implements ListSelectionListener{
+        public void valueChanged(ListSelectionEvent e) {
+            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+
+            int firstIndex = e.getFirstIndex();
+            int lastIndex = e.getLastIndex();
+            boolean isAdjusting = e.getValueIsAdjusting();
+
+            if (lsm.isSelectionEmpty()) {
+                System.out.println("None");
+            } else {
+                // Find out which indexes are selected.
+                int minIndex = lsm.getMinSelectionIndex();
+                int maxIndex = lsm.getMaxSelectionIndex();
+                for (int i = minIndex; i <= maxIndex; i++) {
+                    if (lsm.isSelectedIndex(i)) {
+                        System.out.println(" " + i);
+                    }
+                }
             }
         }
     }
@@ -251,7 +290,9 @@ public class GUI extends JFrame implements ActionListener{
                 int index = theList.locationToIndex(e.getPoint());
                 if (index >= 0) {
                     Object o = theList.getModel().getElementAt(index);
+                    DrinkAbstract temp = (DrinkAbstract) o;
                     System.out.println("Double-clicked on: " + o.toString());
+                    JOptionPane.showMessageDialog(null, o.toString(), ((DrinkAbstract) o).getName(), JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }
@@ -290,46 +331,39 @@ public class GUI extends JFrame implements ActionListener{
             fav = true;
         }
         if(type.toLowerCase().equals("beer")){
-            DrinkAbstract drink = new BeerObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
+            DrinkAbstract drink = new BeerObj(name.getText(), alcPerc.getText(), notes.getText(), dType.getText(), fav);
             drinkList.addDrink(drink);
             defaultList.addElement(drink);
-            favHelper(fav, drink);
         } else if(type.toLowerCase().equals("wine")){
-            DrinkAbstract drink = new WineObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
+            DrinkAbstract drink = new WineObj(name.getText(), alcPerc.getText(), notes.getText(), dType.getText(), fav);
             drinkList.addDrink(drink);
             defaultList.addElement(drink);
-            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("cider")) {
-            DrinkAbstract drink = new CiderObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
+            DrinkAbstract drink = new CiderObj(name.getText(), alcPerc.getText(), notes.getText(), dType.getText(), fav);
             drinkList.addDrink(drink);
             defaultList.addElement(drink);
-            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("hard liquor")) {
-            DrinkAbstract drink = new HardLiquorObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
+            DrinkAbstract drink = new HardLiquorObj(name.getText(), alcPerc.getText(), notes.getText(), dType.getText(), fav);
             drinkList.addDrink(drink);
             defaultList.addElement(drink);
-            favHelper(fav, drink);
         } else if (type.toLowerCase().equals("other")) {
-            DrinkAbstract drink = new OtherObj(name.getText(), dType.getText(), alcPerc.getText(), notes.getText(), fav);
+            DrinkAbstract drink = new OtherObj(name.getText(), alcPerc.getText(), notes.getText(), dType.getText(), fav);
             drinkList.addDrink(drink);
             defaultList.addElement(drink);
-            favHelper(fav, drink);
-        }
-
-        testJList.updateUI();
-    }
-    public void favHelper(boolean f,  DrinkAbstract drink){
-
-        try {
-            if (f) {
-                drinkList.addFavDrink(drink);
-                defaultListFav.addElement(drink);
-            }
-        } catch (DrinkAlreadyExistsException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Drink Already Exists!");
         }
     }
+
+//    public void favHelper(boolean f,  DrinkAbstract drink){
+//        try {
+//            if (f) {
+//                drinkList.addFavDrink(drink);
+//            }
+//        } catch (DrinkAlreadyExistsException e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(null, "Drink exists!");
+//        }
+//
+//    }
 
 
     public void load() throws LoadFailException{
@@ -340,27 +374,21 @@ public class GUI extends JFrame implements ActionListener{
         for (DrinkAbstract drink : mainL) {
             defaultList.addElement(drink);
         }
-
-        defaultListFav.clear();
-        ArrayList<DrinkAbstract> favL = drinkList.returnFavList();
-        for (DrinkAbstract drink : favL) {
-            defaultListFav.addElement(drink);
-        }
-
     }
 
     public void save() throws SaveFailedException{
         drinkList.save();
+        JOptionPane.showMessageDialog(null, "File Saved.");
     }
 
     private class TitleListCellRenderer extends JLabel implements ListCellRenderer<DrinkAbstract> {
-
         public TitleListCellRenderer() {
             setOpaque(true);
         }
         @Override
         public Component getListCellRendererComponent(JList<? extends DrinkAbstract> list, DrinkAbstract value, int index, boolean isSelected, boolean cellHasFocus) {
-            setText(value.getName());
+
+            setText(value.getName() + " " + value.getType() + "                                     " +value.isFav());
 
             Color foreground;
             Color background;

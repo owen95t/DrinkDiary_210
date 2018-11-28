@@ -61,6 +61,13 @@ public abstract class DrinkAbstract implements Serializable, Drink{
         return fav;
     }
 
+    public String isFav() {
+        if (fav) {
+            return "Favourited";
+        }
+        return "";
+    }
+
     public abstract String toString();
 
     @Override
