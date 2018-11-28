@@ -47,6 +47,8 @@ public class GUI extends JFrame implements ActionListener{
         super("Drink Diary");
 
         setSize(650, 350);
+        //null
+        setLocationRelativeTo(null);
 
         drinkList = new DrinkList();
 
@@ -68,7 +70,6 @@ public class GUI extends JFrame implements ActionListener{
         listMain.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listMain.setSelectedIndex(0);
         listMain.setVisibleRowCount(5);
-        //listMain.addListSelectionListener(new myListHandler());
         listMain.setCellRenderer(renderer);
 
 
@@ -81,19 +82,17 @@ public class GUI extends JFrame implements ActionListener{
         listSelectionModel = listMain.getSelectionModel();
         listSelectionModel.addListSelectionListener(new myListHandler());
 
-        save = new JButton("Save");
-        load = new JButton("Load");
-        removeDrink = new JButton("Remove Drink");
+        save = new JButton("Save (Preset)");
+        load = new JButton("Load (Preset)");
+        removeDrink = new JButton("Remove");
         newDrink = new JButton("New Drink");
         favMarker = new JButton("Favourite/Unfavourite");
-//        unFavMarker = new JButton("Unfavourite");
         JPanel buttonPane = new JPanel();
         buttonPane.add(newDrink);
         buttonPane.add(save);
         buttonPane.add(load);
         buttonPane.add(removeDrink);
         buttonPane.add(favMarker);
-//        buttonPane.add(unFavMarker);
         mainPanel.add(buttonPane, BorderLayout.SOUTH);
 
         newDrink.setActionCommand("new");
@@ -106,14 +105,12 @@ public class GUI extends JFrame implements ActionListener{
         removeDrink.addActionListener(new myRemoveHelper());
         favMarker.setActionCommand("fav");
         favMarker.addActionListener(new myFavouriteHelper());
-//        unFavMarker.setActionCommand("unfav");
-//        unFavMarker.addActionListener(new myFavouriteHelper());
 
         listMain.addMouseListener(new myMouseHandler());
 
         this.addWindowListener(new myWindowHandler());
 
-        //ATTEMPT AT JMenuBar
+        //MenuBar
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
@@ -129,8 +126,13 @@ public class GUI extends JFrame implements ActionListener{
         menuFile.add(fSave);
         menuFile.add(fExit);
 
+        JMenuItem about = new JMenuItem("About");
+        menuHelp.add(about);
+
         fOpen.addActionListener(new myOpenFileHandler());
         fSave.addActionListener(new mySaveFileHandler());
+        fExit.addActionListener(new myExitHandler());
+        about.addActionListener(new myAboutHandler());
 
     }
 
@@ -148,12 +150,6 @@ public class GUI extends JFrame implements ActionListener{
                 } catch (LoadFailException l) {
                     JOptionPane.showMessageDialog(null, "Load Failed!");
                 }
-//                filename.setText(jfc.getSelectedFile().getName());
-//                dir.setText(jfc.getCurrentDirectory().toString());
-            }
-            if (rVal == JFileChooser.CANCEL_OPTION) {
-                filename.setText("You pressed cancel");
-                dir.setText("");
             }
         }
     }
@@ -162,7 +158,6 @@ public class GUI extends JFrame implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event) {
             JFileChooser c = new JFileChooser();
-            // Demonstrate "Save" dialog:
             int rVal = c.showSaveDialog(GUI.this);
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 File file = c.getSelectedFile();
@@ -172,16 +167,35 @@ public class GUI extends JFrame implements ActionListener{
                 } catch (SaveFailedException s) {
                     JOptionPane.showMessageDialog(null, "Save failed!");
                 }
-//                filename.setText(c.getSelectedFile().getName());
-//                dir.setText(c.getCurrentDirectory().toString());
-            }
-            if (rVal == JFileChooser.CANCEL_OPTION) {
-                filename.setText("You pressed cancel");
-                dir.setText("");
             }
         }
     }
 
+    private class myExitHandler implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int reply = 0;
+            if (saveState) {
+                reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit?", "Exit confirm", JOptionPane.YES_NO_OPTION);
+            } else if (!saveState) {
+                reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to exit without saving?", "Exit confirm", JOptionPane.YES_NO_OPTION);
+            }
+
+            if (reply == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } else {
+                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            }
+        }
+    }
+
+    private class myAboutHandler implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(null, "Create by Owen Tangjintanakarn\nStudent ID: 20225158\nCSID: r1q1b");
+        }
+    }
 
     private class myWindowHandler extends WindowAdapter{
         public void windowClosing(WindowEvent event) {
@@ -337,6 +351,7 @@ public class GUI extends JFrame implements ActionListener{
             cancel.setActionCommand("close");
             cancel.addActionListener(new myDisposed());
 
+            drinkDialog.setLocationRelativeTo(null);
             drinkDialog.setVisible(true);
         }
     }
@@ -465,6 +480,7 @@ public class GUI extends JFrame implements ActionListener{
         JOptionPane.showMessageDialog(null, "File Saved.");
         saveState = true;
     }
+
     public void save(String filename) throws SaveFailedException{
         drinkList.save(filename);
         JOptionPane.showMessageDialog(null, "File Saved.");
