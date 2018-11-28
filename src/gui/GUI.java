@@ -169,11 +169,11 @@ public class GUI extends JFrame implements ActionListener{
         }
     }
 
-    public class myRemoveHelper implements ActionListener{
+    public class myRemoveHelper implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int index = listMain.getSelectedIndex();
-            if(index >= 0){ //Remove only if a particular item is selected
+            if (index >= 0) { //Remove only if a particular item is selected
                 DrinkAbstract drinkRemoved = (DrinkAbstract) defaultList.getElementAt(index);
                 int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete?", "Remove confirm", JOptionPane.YES_NO_OPTION);
                 if (reply == JOptionPane.YES_OPTION) {
@@ -183,7 +183,7 @@ public class GUI extends JFrame implements ActionListener{
             }
         }
     }
-
+    
     //for creating a new drink
     private class newDrinkHandler implements ActionListener{
         public void actionPerformed(ActionEvent event) {
