@@ -21,7 +21,7 @@ public class WineObj extends DrinkAbstract implements Serializable{
     @Override
     public String toString() {
         return "Name of wine: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
-                + "\nType of wine: " + getType() + "\nNotes on this model: " + getNotes();
+                + "\nType of wine: " + getType() + "\nNotes on this drink: " + getNotes();
     }
 
 }

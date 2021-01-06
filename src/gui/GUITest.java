@@ -97,7 +97,7 @@ public class GUITest extends JPanel implements ListSelectionListener{
 
     public static void main(String[] args){
         GUITest test = new GUITest();
-        test.createAndShowGUI();
+        createAndShowGUI();
         test.setVisible(true);
 
     }

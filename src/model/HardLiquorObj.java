@@ -19,7 +19,7 @@ public class HardLiquorObj extends DrinkAbstract implements Serializable{
     @Override
     public String toString() {
         return "Name of liquor: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
-                + "\nType of liquor: " + getType() + "\nNotes on this model: " + getNotes();
+                + "\nType of liquor: " + getType() + "\nNotes on this drink: " + getNotes();
     }
 
 }

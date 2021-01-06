@@ -20,7 +20,7 @@ public class CiderObj extends DrinkAbstract implements Serializable {
     @Override
     public String toString() {
         return "Name of cider: " + getName() + "\nAlcohol Percentage: " + getAlcPerc()
-                + "\nType of cider: " + getType() + "\nNotes on this model: " + getNotes();
+                + "\nType of cider: " + getType() + "\nNotes on this drink: " + getNotes();
     }
 
 }
