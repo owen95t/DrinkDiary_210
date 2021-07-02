@@ -27,7 +27,7 @@ public class DrinksAppManager {
         while (status) { //ui loop to control the program's status
             displayMainMenu(); //ask for user input
             boolean cycle = false; //create a boolean for the next while loop
-            while (cycle == false) { //while loop that will keep track of user valid/invalid input
+            while (!cycle) { //while loop that will keep track of user valid/invalid input
                 try {
                     int i = input.nextInt();
                     while (i > 7 || i < 1) {

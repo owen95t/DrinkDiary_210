@@ -28,8 +28,8 @@ public class DrinkList extends AbstractList implements Serializable{
     //this override is also never used?
     @Override
     public Object get(int index) {
-        DrinkAbstract dTemp = dList.get(index);
-        return dTemp;
+//        DrinkAbstract dTemp = dList.get(index);
+        return dList.get(index);
     }
 
     //GETTERS AND SETTERS (add,remove,etc):
@@ -272,10 +272,7 @@ public class DrinkList extends AbstractList implements Serializable{
 
     @Override
     public boolean isEmpty() {
-        if (dList.isEmpty()) {
-            return true;
-        }
-        return false;
+        return dList.isEmpty();
     }
 
 }
