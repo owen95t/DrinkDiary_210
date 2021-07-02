@@ -1,11 +1,10 @@
-# My Favourite Drink
+# Drink Diary
 
 
-## Welcome to My Favourite Drink!
-
+## Welcome to Drink Diary
 ### Please view documentation at:
 
-https://www.notion.so/My-Favourite-Drink-676be1d31cb44b9db60f630a1aafe44d
+https://www.notion.so/Drink-Diary-676be1d31cb44b9db60f630a1aafe44d
 
 
 
